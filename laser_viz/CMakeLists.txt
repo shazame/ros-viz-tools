@@ -14,3 +14,8 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+add_executable(laser_viz_obstacles src/laser_viz_obstacles.cpp)
+target_link_libraries(laser_viz_obstacles ${catkin_LIBRARIES})
+
+add_executable(laser_viz_test src/laser_viz_test.cpp)
+target_link_libraries(laser_viz_test ${catkin_LIBRARIES})
