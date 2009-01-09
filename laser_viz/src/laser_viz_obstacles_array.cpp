@@ -1,11 +1,11 @@
 // %Tag(FULLTEXT)%
 #include <ros/ros.h>
-#include <visualization_msgs/Marker.h>
+#include <visualization_msgs/MarkerArray.h>
 #include "sensor_msgs/LaserScan.h"
 
 #include <cmath>
 
-#include "SquareMarker.hpp"
+#include "SquareMarkerArray.hpp"
 
 ros::Publisher obstacle_pub;
 
@@ -13,7 +13,7 @@ void obstacleHandleCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
 //  static int run = 0;
 //  if ((run = (run+1)%10) != 0) return;
-  SquareMarker obstacle(obstacle_pub, "/laser", "laser_viz_obstacles");
+  SquareMarkerArray obstacles("/laser", "laser_viz_obstacles");
   uint32_t i = 0;
 
   for (float theta = msg->angle_min; theta < msg->angle_max; theta += 10 * msg->angle_increment) {
@@ -22,9 +22,11 @@ void obstacleHandleCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
     float x = r * cos(theta);     
     float y = r * sin(theta); 
 
-    obstacle.draw(x, y, r/14.);
+    obstacles.add(x, y, r/14.);
     i += 10;
   }
+
+  obstacles.pub(obstacle_pub);
 }
 
 int main( int argc, char** argv )
@@ -33,7 +35,7 @@ int main( int argc, char** argv )
 
   ros::NodeHandle n;
 
-  obstacle_pub = n.advertise<visualization_msgs::Marker>("visualization_obstacle", 100);
+  obstacle_pub = n.advertise<visualization_msgs::MarkerArray>("visualization_obstacle", 100);
 
   ros::Subscriber sub = n.subscribe("scan", 100, obstacleHandleCallback);
 
