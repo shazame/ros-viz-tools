@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package>
+  <name>rviz_algorithm_viewer</name>
+  <version>0.0.0</version>
+  <description>A plugin for rviz that 3D visualization of algorithm. For each type of algorithm (clustering, etc.) a custom msg format is provided. The result of an algorithm can be displayed easily by sending the corresponding message on a topic read by this tool.</description>
+
+  <maintainer email="david.bitonneau@gmail.com">David Bitonneau</maintainer>
+  <author email="david.bitonneau@gmail.com">David Bitonneau</author>
+  <license>BSD</license>
+
+  <!-- <url type="website">http://ros.org/wiki/rviz_algorithm_viewer</url> -->
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>rviz</build_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>rviz</run_depend>
+
+  <!-- Use test_depend for packages you need only for testing: -->
+  <!--   <test_depend>gtest</test_depend> -->
+
+  <export>
+  </export>
+</package>
