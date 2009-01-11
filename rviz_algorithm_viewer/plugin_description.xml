@@ -1,0 +1,9 @@
+<library path="lib/librviz_algorithm_viewer">
+  <class name="rviz_algorithm_viewer/Cluster"
+         type="rviz_algorithm_viewer::ClusterDisplay"
+         base_class_type="rviz::Display">
+    <description>
+      Displays cluster of points from algorithm_msgs/Cluster messages.
+    </description>
+  </class>
+</library>

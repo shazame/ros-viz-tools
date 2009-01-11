@@ -1,53 +1,81 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(rviz_algorithm_viewer)
 
-find_package(catkin REQUIRED COMPONENTS roscpp rviz)
+find_package(catkin REQUIRED COMPONENTS roscpp rviz std_msgs geometry_msgs
+  message_generation)
+## This plugin includes Qt widgets, so we must include Qt like so:
+find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
+include(${QT_USE_FILE})
+
+## I prefer the Qt signals and slots to avoid defining "emit", "slots",
+## etc because they can conflict with boost signals, so define QT_NO_KEYWORDS here.
+add_definitions(-DQT_NO_KEYWORDS)
+
+## Here we specify which header files need to be run through "moc",
+## Qt's meta-object compiler.
+qt4_wrap_cpp(MOC_FILES
+  src/cluster_display.h
+)
+
+## Here we specify the list of source files, including the output of
+## the previous command which is stored in ``${MOC_FILES}``.
+set(SOURCE_FILES
+  src/cluster_display.cpp
+  src/cluster_visual.cpp
+  ${MOC_FILES}
+)
+
+## An rviz plugin is just a shared library, so here we declare the
+## library to be called ``${PROJECT_NAME}`` and specify the list of source
+## files we collected above in ``${SOURCE_FILES}``.
+add_library(${PROJECT_NAME} ${SOURCE_FILES})
+
+## Link the library with whatever Qt libraries have been defined by
+## the ``find_package(Qt4 ...)`` line above.
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
 
 #######################################
 ## Declare ROS messages and services ##
 #######################################
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  Cluster.msg  ClusterPoint.msg
+  Cluster2.msg ClusterField.msg
+)
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+  geometry_msgs
+)
 
 ###################################
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES rviz_algorithm_viewer
-#  CATKIN_DEPENDS roscpp rviz
+   CATKIN_DEPENDS message_runtime roscpp rviz
 #  DEPENDS system_lib
 )
 
-include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
+#include_directories(
+#  ${catkin_INCLUDE_DIRS}
+#)
 
 ## Declare a cpp library
 # add_library(rviz_algorithm_viewer
 #   src/${PROJECT_NAME}/rviz_algorithm_viewer.cpp
 # )
 
-## Declare a cpp executable
-# add_executable(rviz_algorithm_viewer_node src/rviz_algorithm_viewer_node.cpp)
+#add_executable(visualize_clustering src/visualize_clustering.cpp)
+#target_link_libraries(visualize_clustering ${catkin_LIBRARIES})
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(rviz_algorithm_viewer_node rviz_algorithm_viewer_generate_messages_cpp)
 
-## Specify libraries to link a library or executable target against
-# target_link_libraries(rviz_algorithm_viewer_node
-#   ${catkin_LIBRARIES}
-# )
 
 #############
 ## Install ##
