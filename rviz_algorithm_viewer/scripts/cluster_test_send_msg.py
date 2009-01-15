@@ -5,6 +5,7 @@ import rospy
 from rviz_algorithm_viewer.msg import Cluster2, ClusterField
 import geometry_msgs.msg
 import random
+import tf
 
 def rand_cluster(n):
   clust_f = ClusterField()
@@ -41,8 +42,17 @@ def send_clusters():
 
   rospy.loginfo( 'Cluster test started. Sending cluster points...' )
 
+  br = tf.TransformBroadcaster()
+
   while not rospy.is_shutdown():
     pub.publish( gen_clusters() )
+
+    br.sendTransform((0, 0, 0),
+        tf.transformations.quaternion_from_euler(0, 0, 0),
+        rospy.Time.now(),
+        "base_link",
+        "map")
+
     rospy.sleep( 1.0 )
 
 if __name__ == '__main__':
