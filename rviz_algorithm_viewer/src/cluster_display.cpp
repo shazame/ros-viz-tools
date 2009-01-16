@@ -26,8 +26,8 @@ ClusterDisplay::ClusterDisplay()
                                              this, SLOT( updateColorAndAlpha() ));
 
   radius_property_ = new rviz::FloatProperty( "Radius", 0.2,
-                                             "Radius of a point.",
-                                             this, SLOT( updateColorAndAlpha() ));
+                                              "Radius of a point.",
+                                              this, SLOT( updateColorAndAlpha() ));
 
   history_length_property_ = new rviz::IntProperty( "History Length", 1,
                                                     "Number of prior measurements to display.",

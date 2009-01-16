@@ -4,12 +4,58 @@
 
 #include <rviz/ogre_helpers/shape.h>
 
+#include <geometry_msgs/Point.h>
+
 #include "ros/ros.h"
 
 #include "cluster_visual.h"
 
 namespace rviz_algorithm_viewer
 {
+
+ClusterVisual::ClusterPoints::ClusterPoints( Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node )
+{
+  scene_manager_ = scene_manager;
+  frame_node_ = parent_node->createChildSceneNode();
+}
+
+ClusterVisual::ClusterPoints::~ClusterPoints()
+{
+  //cluster_.clear();
+  scene_manager_->destroySceneNode( frame_node_ );
+}
+
+void ClusterVisual::ClusterPoints::clear()
+{
+  points.clear();
+}
+
+void ClusterVisual::ClusterPoints::addPoint( Ogre::Vector3 position )
+{
+  // We create the sphere object within the frame node so that we can
+  // set its position and direction relative to its header frame.
+  PointPtr pts(new rviz::Shape( rviz::Shape::Sphere, scene_manager_, frame_node_));
+
+  Ogre::Vector3 scale( radius_, radius_, radius_ );
+  pts->setScale( scale );
+  pts->setPosition( position );
+
+  points.push_back( pts );
+}
+void ClusterVisual::ClusterPoints::setColor( float r, float g, float b, float a )
+{
+  std::vector<PointPtr>::iterator it = points.begin();
+  std::vector<PointPtr>::iterator end = points.end();
+  for (; it != end; ++it)
+  {
+    (*it)->setColor( r, g, b, a );
+  }
+}
+
+void ClusterVisual::ClusterPoints::setRadius( float r )
+{
+  radius_ = r;
+}
 
 ClusterVisual::ClusterVisual( Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node )
 {
@@ -24,9 +70,7 @@ ClusterVisual::ClusterVisual( Ogre::SceneManager* scene_manager, Ogre::SceneNode
   // relative to the RViz fixed frame.
   frame_node_ = parent_node->createChildSceneNode();
 
-  // We create the arrow object within the frame node so that we can
-  // set its position and direction relative to its header frame.
-  cluster_.reset(new rviz::Shape( rviz::Shape::Sphere, scene_manager_, frame_node_));
+  clusters_.reset(new ClusterPoints( scene_manager_, frame_node_ ));
 }
 
 ClusterVisual::~ClusterVisual()
@@ -37,16 +81,19 @@ ClusterVisual::~ClusterVisual()
 
 void ClusterVisual::setMessage( const rviz_algorithm_viewer::Cluster2::ConstPtr& msg )
 {
-  Ogre::Vector3 scale( radius_, radius_, radius_ );
-  cluster_->setScale( scale );
+  clusters_->clear();
 
-  // Convert the geometry_msgs::Point to an Ogre::Vector3
-  Ogre::Vector3 pos( 
-      msg->clusters[0].points[0].x, 
-      msg->clusters[0].points[0].y, 
-      msg->clusters[0].points[0].z );
+  std::vector<geometry_msgs::Point>::const_iterator it  = msg->clusters[0].points.begin();
+  std::vector<geometry_msgs::Point>::const_iterator end = msg->clusters[0].points.end();
+  for (; it != end; ++it)
+  {
+    Ogre::Vector3 pos( 
+        (*it).x, 
+        (*it).y, 
+        (*it).z );
 
-  cluster_->setPosition( pos );
+    clusters_->addPoint( pos );
+  }
 }
 
 // Position and orientation are passed through to the SceneNode.
@@ -60,15 +107,15 @@ void ClusterVisual::setFrameOrientation( const Ogre::Quaternion& orientation )
   frame_node_->setOrientation( orientation );
 }
 
-// Color is passed through to the Arrow object.
+// Color is passed through to the Shape object.
 void ClusterVisual::setColor( float r, float g, float b, float a )
 {
-  cluster_->setColor( r, g, b, a );
+  clusters_->setColor( r, g, b, a );
 }
 
 void ClusterVisual::setRadius( float r )
 {
-  radius_ = r;
+  clusters_->setRadius(r);
 }
 
 } // end namespace rviz_algorithm_viewer
