@@ -11,14 +11,14 @@ def rand_cluster(n):
   clust_f = ClusterField()
   clust_f.name = "Cluster %d" % n
 
-  points_nb = random.randint( 1, 100 )
+  points_nb = random.randint( 1, 30 )
 
   for i in range(points_nb):
     point = geometry_msgs.msg.Point()
 
-    point.x = random.uniform( -10, 10 )
-    point.y = random.uniform( -10, 10 )
-    point.z = random.uniform( -10, 10 )
+    point.x = random.uniform( -20, 20 )
+    point.y = random.uniform( -20, 20 )
+    point.z = random.uniform( -20, 20 )
 
     clust_f.points.append( point )
 
@@ -29,7 +29,7 @@ def gen_clusters():
   clust_msg.header.frame_id = "/base_link"
   clust_msg.header.stamp = rospy.Time.now()
 
-  cluster_nb = random.randint( 1, 20 )
+  cluster_nb = random.randint( 1, 10 )
 
   for i in range(cluster_nb):
     clust_msg.clusters.append( rand_cluster(i) )
@@ -53,7 +53,7 @@ def send_clusters():
         "base_link",
         "map")
 
-    rospy.sleep( 1.0 )
+    rospy.sleep( 0.5 )
 
 if __name__ == '__main__':
   try:

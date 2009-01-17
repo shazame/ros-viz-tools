@@ -5,6 +5,7 @@
 #include <rviz/ogre_helpers/shape.h>
 
 #include <geometry_msgs/Point.h>
+#include <rviz_algorithm_viewer/ClusterField.h>
 
 #include "ros/ros.h"
 
@@ -21,13 +22,7 @@ ClusterVisual::ClusterPoints::ClusterPoints( Ogre::SceneManager* scene_manager, 
 
 ClusterVisual::ClusterPoints::~ClusterPoints()
 {
-  //cluster_.clear();
   scene_manager_->destroySceneNode( frame_node_ );
-}
-
-void ClusterVisual::ClusterPoints::clear()
-{
-  points.clear();
 }
 
 void ClusterVisual::ClusterPoints::addPoint( Ogre::Vector3 position )
@@ -52,11 +47,6 @@ void ClusterVisual::ClusterPoints::setColor( float r, float g, float b, float a 
   }
 }
 
-void ClusterVisual::ClusterPoints::setRadius( float r )
-{
-  radius_ = r;
-}
-
 ClusterVisual::ClusterVisual( Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node )
 {
   scene_manager_ = scene_manager;
@@ -69,8 +59,6 @@ ClusterVisual::ClusterVisual( Ogre::SceneManager* scene_manager, Ogre::SceneNode
   // Here we create a node to store the pose of the Cluster's header frame
   // relative to the RViz fixed frame.
   frame_node_ = parent_node->createChildSceneNode();
-
-  clusters_.reset(new ClusterPoints( scene_manager_, frame_node_ ));
 }
 
 ClusterVisual::~ClusterVisual()
@@ -81,18 +69,30 @@ ClusterVisual::~ClusterVisual()
 
 void ClusterVisual::setMessage( const rviz_algorithm_viewer::Cluster2::ConstPtr& msg )
 {
-  clusters_->clear();
+  // Remove all the previous points and clusters from the display
+  clusters_.clear();
 
-  std::vector<geometry_msgs::Point>::const_iterator it  = msg->clusters[0].points.begin();
-  std::vector<geometry_msgs::Point>::const_iterator end = msg->clusters[0].points.end();
-  for (; it != end; ++it)
+  // Add every cluster of the message to the display
+  std::vector<rviz_algorithm_viewer::ClusterField>::const_iterator clust_it  = msg->clusters.begin();
+  std::vector<rviz_algorithm_viewer::ClusterField>::const_iterator clust_end = msg->clusters.end();
+  for (; clust_it != clust_end; ++clust_it)
   {
-    Ogre::Vector3 pos( 
-        (*it).x, 
-        (*it).y, 
-        (*it).z );
+    ClusterPointsPtr cluster_ptr(new ClusterPoints( scene_manager_, frame_node_ ));
 
-    clusters_->addPoint( pos );
+    // Add to this cluster every points found in the message
+    std::vector<geometry_msgs::Point>::const_iterator pts_it  = (*clust_it).points.begin();
+    std::vector<geometry_msgs::Point>::const_iterator pts_end = (*clust_it).points.end();
+    for (; pts_it != pts_end; ++pts_it)
+    {
+      Ogre::Vector3 pos( 
+          (*pts_it).x, 
+          (*pts_it).y, 
+          (*pts_it).z );
+
+      cluster_ptr->addPoint( pos );
+    }
+
+    clusters_.push_back( cluster_ptr );
   }
 }
 
@@ -107,15 +107,27 @@ void ClusterVisual::setFrameOrientation( const Ogre::Quaternion& orientation )
   frame_node_->setOrientation( orientation );
 }
 
-// Color is passed through to the Shape object.
+// Color is passed through to all the Shape objects.
 void ClusterVisual::setColor( float r, float g, float b, float a )
 {
-  clusters_->setColor( r, g, b, a );
+
+  std::vector<ClusterPointsPtr>::iterator it = clusters_.begin();
+  std::vector<ClusterPointsPtr>::iterator end = clusters_.end();
+  for (; it != end; ++it)
+  {
+    (*it)->setColor( r, g, b, a );
+  }
 }
 
 void ClusterVisual::setRadius( float r )
 {
-  clusters_->setRadius(r);
+  if ( r == 0 ) {
+    return;
+  }
+
+  radius_ = r;
 }
+
+float ClusterVisual::radius_ = 0.2;
 
 } // end namespace rviz_algorithm_viewer
