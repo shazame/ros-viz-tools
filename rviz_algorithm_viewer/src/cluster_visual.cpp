@@ -90,6 +90,10 @@ void ClusterVisual::setMessage( const rviz_algorithm_viewer::Cluster2::ConstPtr&
           (*pts_it).z );
 
       cluster_ptr->addPoint( pos );
+      float red   = (pos.x + 20) / 40.;
+      float green = (pos.y + 20) / 40.;
+      float blue  = (pos.z + 20) / 40.;
+      cluster_ptr->setColor( red, green, blue, 1 );
     }
 
     clusters_.push_back( cluster_ptr );

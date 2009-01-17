@@ -72,7 +72,7 @@ void ClusterDisplay::updateColorAndAlpha()
 
   for( size_t i = 0; i < visuals_.size(); i++ )
   {
-    visuals_[ i ]->setColor( color.r, color.g, color.b, alpha );
+    //visuals_[ i ]->setColor( color.r, color.g, color.b, alpha );
     visuals_[ i ]->setRadius( radius );
   }
 }
@@ -120,7 +120,7 @@ void ClusterDisplay::processMessage( const rviz_algorithm_viewer::Cluster2::Cons
   float alpha = alpha_property_->getFloat();
   float radius = radius_property_->getFloat();
   Ogre::ColourValue color = color_property_->getOgreColor();
-  visual->setColor( color.r, color.g, color.b, alpha );
+  //visual->setColor( color.r, color.g, color.b, alpha );
   visual->setRadius( radius );
 
   // And send it to the end of the circular buffer
