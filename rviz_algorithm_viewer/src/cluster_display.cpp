@@ -18,7 +18,7 @@ namespace rviz_algorithm_viewer
 ClusterDisplay::ClusterDisplay()
 {
   color_property_ = new rviz::ColorProperty( "Color", QColor( 204, 51, 204 ),
-                                             "Color to draw the acceleration arrows.",
+                                             "Color to draw the clusters.",
                                              this, SLOT( updateColorAndAlpha() ));
 
   alpha_property_ = new rviz::FloatProperty( "Alpha", 1.0,
@@ -72,7 +72,7 @@ void ClusterDisplay::updateColorAndAlpha()
 
   for( size_t i = 0; i < visuals_.size(); i++ )
   {
-    //visuals_[ i ]->setColor( color.r, color.g, color.b, alpha );
+    visuals_[ i ]->setColor( color.r, color.g, color.b, alpha );
     visuals_[ i ]->setRadius( radius );
   }
 }
@@ -117,14 +117,20 @@ void ClusterDisplay::processMessage( const rviz_algorithm_viewer::Cluster2::Cons
   visual->setFramePosition( position );
   visual->setFrameOrientation( orientation );
 
-  float alpha = alpha_property_->getFloat();
-  float radius = radius_property_->getFloat();
-  Ogre::ColourValue color = color_property_->getOgreColor();
-  //visual->setColor( color.r, color.g, color.b, alpha );
-  visual->setRadius( radius );
+  initProperties( visual );
 
   // And send it to the end of the circular buffer
   visuals_.push_back(visual);
+}
+
+void ClusterDisplay::initProperties(boost::shared_ptr<ClusterVisual> visual)
+{
+  float alpha = alpha_property_->getFloat();
+  Ogre::ColourValue color = color_property_->getOgreColor();
+  visual->setColor( color.r, color.g, color.b, alpha );
+
+  float radius = radius_property_->getFloat();
+  visual->setRadius( radius );
 }
 
 } // end namespace rviz_algorithm_viewer

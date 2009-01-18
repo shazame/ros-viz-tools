@@ -52,6 +52,8 @@ private Q_SLOTS:
 private:
   void processMessage( const rviz_algorithm_viewer::Cluster2::ConstPtr& msg );
 
+  void initProperties(boost::shared_ptr<ClusterVisual> visual);
+
   // Storage for the list of visuals.  It is a circular buffer where
   // data gets popped from the front (oldest) and pushed to the back (newest)
   boost::circular_buffer<boost::shared_ptr<ClusterVisual> > visuals_;

@@ -26,26 +26,6 @@ namespace rviz_algorithm_viewer
 class ClusterVisual
 {
 public:
-  class ClusterPoints
-  {
-    public:
-      ClusterPoints( Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node );
-      ~ClusterPoints();
-
-      void clear();
-      void addPoint( Ogre::Vector3 position );
-      void setColor( float r, float g, float b, float a );
-
-    private:
-      typedef boost::shared_ptr<rviz::Shape> PointPtr;
-      std::vector<PointPtr> points;
-
-      Ogre::SceneNode* frame_node_;
-      Ogre::SceneManager* scene_manager_;
-  };
-
-  typedef boost::shared_ptr<ClusterVisual::ClusterPoints> ClusterPointsPtr;
-
   // Constructor.  Creates the visual stuff and puts it into the
   // scene, but in an unconfigured state.
   ClusterVisual( Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node );
@@ -71,9 +51,6 @@ public:
   void setRadius( float r );
 
 private:
-  // The object implementing the actual point cluster
-  std::vector<ClusterPointsPtr> clusters_;
-
   // A SceneNode whose pose is set to match the coordinate frame of
   // the Cluster message header.
   Ogre::SceneNode* frame_node_;
@@ -81,6 +58,29 @@ private:
   // The SceneManager, kept here only so the destructor can ask it to
   // destroy the ``frame_node_``.
   Ogre::SceneManager* scene_manager_;
+
+  class ClusterPoints
+  {
+    public:
+      ClusterPoints( Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node );
+      ~ClusterPoints();
+
+      void clear();
+      void addPoint( Ogre::Vector3 position );
+      void setColor( float r, float g, float b, float a );
+
+    private:
+      typedef boost::shared_ptr<rviz::Shape> PointPtr;
+      std::vector<PointPtr> points;
+
+      Ogre::SceneNode* frame_node_;
+      Ogre::SceneManager* scene_manager_;
+  };
+
+  typedef boost::shared_ptr<ClusterVisual::ClusterPoints> ClusterPointsPtr;
+
+  // The object implementing the actual point cluster
+  std::vector<ClusterPointsPtr> clusters_;
 
   static float radius_;
 };

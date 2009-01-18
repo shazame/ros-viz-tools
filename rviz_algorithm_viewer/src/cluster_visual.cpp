@@ -14,39 +14,6 @@
 namespace rviz_algorithm_viewer
 {
 
-ClusterVisual::ClusterPoints::ClusterPoints( Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node )
-{
-  scene_manager_ = scene_manager;
-  frame_node_ = parent_node->createChildSceneNode();
-}
-
-ClusterVisual::ClusterPoints::~ClusterPoints()
-{
-  scene_manager_->destroySceneNode( frame_node_ );
-}
-
-void ClusterVisual::ClusterPoints::addPoint( Ogre::Vector3 position )
-{
-  // We create the sphere object within the frame node so that we can
-  // set its position and direction relative to its header frame.
-  PointPtr pts(new rviz::Shape( rviz::Shape::Sphere, scene_manager_, frame_node_));
-
-  Ogre::Vector3 scale( radius_, radius_, radius_ );
-  pts->setScale( scale );
-  pts->setPosition( position );
-
-  points.push_back( pts );
-}
-void ClusterVisual::ClusterPoints::setColor( float r, float g, float b, float a )
-{
-  std::vector<PointPtr>::iterator it = points.begin();
-  std::vector<PointPtr>::iterator end = points.end();
-  for (; it != end; ++it)
-  {
-    (*it)->setColor( r, g, b, a );
-  }
-}
-
 ClusterVisual::ClusterVisual( Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node )
 {
   scene_manager_ = scene_manager;
@@ -90,10 +57,10 @@ void ClusterVisual::setMessage( const rviz_algorithm_viewer::Cluster2::ConstPtr&
           (*pts_it).z );
 
       cluster_ptr->addPoint( pos );
-      float red   = (pos.x + 20) / 40.;
-      float green = (pos.y + 20) / 40.;
-      float blue  = (pos.z + 20) / 40.;
-      cluster_ptr->setColor( red, green, blue, 1 );
+      //float red   = (pos.x + 20) / 40.;
+      //float green = (pos.y + 20) / 40.;
+      //float blue  = (pos.z + 20) / 40.;
+      //cluster_ptr->setColor( red, green, blue, 1 );
     }
 
     clusters_.push_back( cluster_ptr );
@@ -125,13 +92,44 @@ void ClusterVisual::setColor( float r, float g, float b, float a )
 
 void ClusterVisual::setRadius( float r )
 {
-  if ( r == 0 ) {
-    return;
-  }
-
   radius_ = r;
 }
 
 float ClusterVisual::radius_ = 0.2;
+
+
+ClusterVisual::ClusterPoints::ClusterPoints( Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node )
+{
+  scene_manager_ = scene_manager;
+  frame_node_ = parent_node->createChildSceneNode();
+}
+
+ClusterVisual::ClusterPoints::~ClusterPoints()
+{
+  scene_manager_->destroySceneNode( frame_node_ );
+}
+
+void ClusterVisual::ClusterPoints::addPoint( Ogre::Vector3 position )
+{
+  // We create the sphere object within the frame node so that we can
+  // set its position and direction relative to its header frame.
+  PointPtr pts(new rviz::Shape( rviz::Shape::Sphere, scene_manager_, frame_node_));
+
+  Ogre::Vector3 scale( radius_, radius_, radius_ );
+  pts->setScale( scale );
+  pts->setPosition( position );
+
+  points.push_back( pts );
+}
+void ClusterVisual::ClusterPoints::setColor( float r, float g, float b, float a )
+{
+  std::vector<PointPtr>::iterator it = points.begin();
+  std::vector<PointPtr>::iterator end = points.end();
+  for (; it != end; ++it)
+  {
+    (*it)->setColor( r, g, b, a );
+  }
+}
+
 
 } // end namespace rviz_algorithm_viewer
