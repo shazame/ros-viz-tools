@@ -71,7 +71,7 @@ private:
 
     private:
       typedef boost::shared_ptr<rviz::Shape> PointPtr;
-      std::vector<PointPtr> points;
+      std::vector<PointPtr> points_;
 
       Ogre::SceneNode* frame_node_;
       Ogre::SceneManager* scene_manager_;

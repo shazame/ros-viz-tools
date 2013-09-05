@@ -81,7 +81,6 @@ void ClusterVisual::setFrameOrientation( const Ogre::Quaternion& orientation )
 // Color is passed through to all the Shape objects.
 void ClusterVisual::setColor( float r, float g, float b, float a )
 {
-
   std::vector<ClusterPointsPtr>::iterator it = clusters_.begin();
   std::vector<ClusterPointsPtr>::iterator end = clusters_.end();
   for (; it != end; ++it)
@@ -119,12 +118,13 @@ void ClusterVisual::ClusterPoints::addPoint( Ogre::Vector3 position )
   pts->setScale( scale );
   pts->setPosition( position );
 
-  points.push_back( pts );
+  points_.push_back( pts );
 }
+
 void ClusterVisual::ClusterPoints::setColor( float r, float g, float b, float a )
 {
-  std::vector<PointPtr>::iterator it = points.begin();
-  std::vector<PointPtr>::iterator end = points.end();
+  std::vector<PointPtr>::iterator it = points_.begin();
+  std::vector<PointPtr>::iterator end = points_.end();
   for (; it != end; ++it)
   {
     (*it)->setColor( r, g, b, a );
