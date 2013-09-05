@@ -8,13 +8,16 @@ import random
 import tf
 
 cluster_radius = 5
+max_cluster_pts = 50
+max_clusters = 15
+fps = 0.1
 
 def rand_cluster(n, c_x, c_y, c_z):
   """x, y and z are the coordinates of the cluster center"""
   clust_f = ClusterField()
   clust_f.name = "Cluster %d" % n
 
-  points_nb = random.randint( 1, 30 )
+  points_nb = random.randint( 1, max_cluster_pts )
 
   for i in range(points_nb):
     point = geometry_msgs.msg.Point()
@@ -32,7 +35,7 @@ def gen_clusters():
   clust_msg.header.frame_id = "/base_link"
   clust_msg.header.stamp = rospy.Time.now()
 
-  cluster_nb = random.randint( 1, 10 )
+  cluster_nb = random.randint( 1, max_clusters )
   for i in range(cluster_nb):
     x = random.uniform( -20, 20 )
     y = random.uniform( -20, 20 )
@@ -58,7 +61,7 @@ def send_clusters():
         "base_link",
         "map")
 
-    rospy.sleep( 1 )
+    rospy.sleep( 1. / fps )
 
 if __name__ == '__main__':
   try:
