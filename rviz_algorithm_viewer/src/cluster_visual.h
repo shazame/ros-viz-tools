@@ -68,10 +68,12 @@ private:
       void clear();
       void addPoint( Ogre::Vector3 position );
       void setColor( float r, float g, float b, float a );
+      void displayEnvelope();
 
     private:
       typedef boost::shared_ptr<rviz::Shape> PointPtr;
       std::vector<PointPtr> points_;
+      boost::shared_ptr<rviz::Shape> envelope_;
 
       Ogre::SceneNode* frame_node_;
       Ogre::SceneManager* scene_manager_;

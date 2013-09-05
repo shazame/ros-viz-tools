@@ -7,7 +7,7 @@
 #include <geometry_msgs/Point.h>
 #include <rviz_algorithm_viewer/ClusterField.h>
 
-#include "ros/ros.h"
+#include <cmath>
 
 #include "cluster_visual.h"
 
@@ -63,6 +63,7 @@ void ClusterVisual::setMessage( const rviz_algorithm_viewer::Cluster2::ConstPtr&
       //cluster_ptr->setColor( red, green, blue, 1 );
     }
 
+    cluster_ptr->displayEnvelope();
     clusters_.push_back( cluster_ptr );
   }
 }
@@ -129,7 +130,61 @@ void ClusterVisual::ClusterPoints::setColor( float r, float g, float b, float a 
   {
     (*it)->setColor( r, g, b, a );
   }
+
+  envelope_->setColor( r, g, b, a );
 }
 
+#include "Miniball.hpp"
+
+void ClusterVisual::ClusterPoints::displayEnvelope()
+{
+  envelope_.reset( new rviz::Shape( rviz::Shape::Sphere, scene_manager_, frame_node_) );
+
+  // Convert vector of rviz::Shape to vector of array 
+  // to allow iteration over coordinates
+  std::vector<float*> vp;
+  std::vector<PointPtr>::iterator it = points_.begin();
+  std::vector<PointPtr>::iterator end = points_.end();
+  for (; it != end; ++it)
+  {
+    // The coordinates are stored in an array
+    float* p = new float[3];
+    Ogre::Vector3 pos = (*it)->getPosition();
+    p[0] = pos.x;
+    p[1] = pos.y;
+    p[2] = pos.z;
+
+    vp.push_back(p);
+  }
+
+  // define the types of iterators through the points and their coordinates
+  typedef std::vector<float*>::const_iterator PointIterator;
+  typedef const float* CoordIterator;
+
+  // Compute bounding sphere center and radius
+  typedef Miniball::
+    Miniball <Miniball::CoordAccessor<PointIterator, CoordIterator> >
+    MB;
+  MB mb ( 3, vp.begin(), vp.end() ); // 3 is the dimension of the points
+
+  // Convert Miniball position and diameter into Ogre::Vector3
+  float d = 2 * std::sqrt( mb.squared_radius() );
+  Ogre::Vector3 diameter( d, d, d );
+
+  const float* center = mb.center();
+  float x = *(center++);
+  float y = *(center++);
+  float z = *center;
+  Ogre::Vector3 centerPos( x, y, z );
+
+  // Update envelope with computed diameter and position
+  envelope_->setScale( diameter );
+  envelope_->setPosition( centerPos );
+
+  // clean up
+  for (std::vector<float*>::iterator it = vp.begin(); it != vp.end(); ++it) {
+    delete[] *it;
+  }
+}
 
 } // end namespace rviz_algorithm_viewer
