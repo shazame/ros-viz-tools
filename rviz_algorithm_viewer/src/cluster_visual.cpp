@@ -49,6 +49,7 @@ void ClusterVisual::setMessage( const rviz_algorithm_viewer::Cluster2::ConstPtr&
     // Add to this cluster every points found in the message
     std::vector<geometry_msgs::Point>::const_iterator pts_it  = (*clust_it).points.begin();
     std::vector<geometry_msgs::Point>::const_iterator pts_end = (*clust_it).points.end();
+    //float red, green, blue;
     for (; pts_it != pts_end; ++pts_it)
     {
       Ogre::Vector3 pos( 
@@ -57,13 +58,14 @@ void ClusterVisual::setMessage( const rviz_algorithm_viewer::Cluster2::ConstPtr&
           (*pts_it).z );
 
       cluster_ptr->addPoint( pos );
-      //float red   = (pos.x + 20) / 40.;
-      //float green = (pos.y + 20) / 40.;
-      //float blue  = (pos.z + 20) / 40.;
-      //cluster_ptr->setColor( red, green, blue, 1 );
+
+      //red   = (pos.x + 20) / 40.;
+      //green = (pos.y + 20) / 40.;
+      //blue  = (pos.z + 20) / 40.;
     }
 
     cluster_ptr->displayEnvelope();
+    //cluster_ptr->setColor( red, green, blue, 0.5 );
     clusters_.push_back( cluster_ptr );
   }
 }
