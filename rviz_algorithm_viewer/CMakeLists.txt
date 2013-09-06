@@ -11,7 +11,6 @@ include(${QT_USE_FILE})
 ## etc because they can conflict with boost signals, so define QT_NO_KEYWORDS here.
 add_definitions(-DQT_NO_KEYWORDS)
 
-
 #######################################
 ## Declare ROS messages and services ##
 #######################################
@@ -34,26 +33,40 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES rviz_algorithm_viewer
-   CATKIN_DEPENDS message_runtime roscpp rviz
+#  CATKIN_DEPENDS message_runtime roscpp rviz
 #  DEPENDS system_lib
 )
 
-#include_directories(
-#  ${catkin_INCLUDE_DIRS}
-#)
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+)
 
-## Declare a cpp library
-# add_library(rviz_algorithm_viewer
-#   src/${PROJECT_NAME}/rviz_algorithm_viewer.cpp
-# )
+## Here we specify which header files need to be run through "moc",
+## Qt's meta-object compiler.
+qt4_wrap_cpp(MOC_FILES
+  src/cluster_display.h
+)
 
-#add_executable(visualize_clustering src/visualize_clustering.cpp)
-#target_link_libraries(visualize_clustering ${catkin_LIBRARIES})
+## Here we specify the list of source files, including the output of
+## the previous command which is stored in ``${MOC_FILES}``.
+set(SOURCE_FILES
+  src/cluster_display.cpp
+  src/cluster_visual.cpp
+  ${MOC_FILES}
+)
+
+## An rviz plugin is just a shared library, so here we declare the
+## library to be called ``${PROJECT_NAME}`` and specify the list of source
+## files we collected above in ``${SOURCE_FILES}``.
+add_library(${PROJECT_NAME} ${SOURCE_FILES})
+
+## Link the library with whatever Qt libraries have been defined by
+## the ``find_package(Qt4 ...)`` line above.
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(rviz_algorithm_viewer_node rviz_algorithm_viewer_generate_messages_cpp)
-
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)
 
 #############
 ## Install ##
@@ -103,26 +116,3 @@ catkin_package(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-
-## Here we specify which header files need to be run through "moc",
-## Qt's meta-object compiler.
-qt4_wrap_cpp(MOC_FILES
-  src/cluster_display.h
-)
-
-## Here we specify the list of source files, including the output of
-## the previous command which is stored in ``${MOC_FILES}``.
-set(SOURCE_FILES
-  src/cluster_display.cpp
-  src/cluster_visual.cpp
-  ${MOC_FILES}
-)
-
-## An rviz plugin is just a shared library, so here we declare the
-## library to be called ``${PROJECT_NAME}`` and specify the list of source
-## files we collected above in ``${SOURCE_FILES}``.
-add_library(${PROJECT_NAME} ${SOURCE_FILES})
-
-## Link the library with whatever Qt libraries have been defined by
-## the ``find_package(Qt4 ...)`` line above.
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
