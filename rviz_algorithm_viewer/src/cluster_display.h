@@ -16,6 +16,7 @@ namespace rviz
 class ColorProperty;
 class FloatProperty;
 class IntProperty;
+class BoolProperty;
 }
 
 namespace rviz_algorithm_viewer
@@ -47,6 +48,7 @@ protected:
 private Q_SLOTS:
   void updateColorAndAlpha();
   void updateHistoryLength();
+  void updatePointsAndClusters();
 
   // Function to handle an incoming ROS message.
 private:
@@ -59,9 +61,10 @@ private:
   boost::circular_buffer<boost::shared_ptr<ClusterVisual> > visuals_;
 
   // User-editable property variables.
+  rviz::BoolProperty*  show_points_property_, *show_clusters_property_;
   rviz::ColorProperty* color_property_;
   rviz::FloatProperty* alpha_property_, *radius_property_;
-  rviz::IntProperty* history_length_property_;
+  rviz::IntProperty*   history_length_property_;
 };
 
 } // end namespace rviz_algorithm_viewer

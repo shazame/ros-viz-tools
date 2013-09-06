@@ -64,7 +64,10 @@ void ClusterVisual::setMessage( const rviz_algorithm_viewer::Cluster2::ConstPtr&
       //blue  = (pos.z + 20) / 40.;
     }
 
-    cluster_ptr->displayEnvelope();
+    if ( show_clusters_ ) 
+    {
+      cluster_ptr->displayEnvelope();
+    }
     //cluster_ptr->setColor( red, green, blue, 0.5 );
     clusters_.push_back( cluster_ptr );
   }
@@ -97,7 +100,19 @@ void ClusterVisual::setRadius( float r )
   radius_ = r;
 }
 
+void ClusterVisual::setPointsShow( bool show_points )
+{
+  show_points_ = show_points;
+}
+
+void ClusterVisual::setClustersShow( bool show_clusters )
+{
+  show_clusters_ = show_clusters;
+}
+
 float ClusterVisual::radius_ = 0.2;
+bool  ClusterVisual::show_points_ = true;
+bool  ClusterVisual::show_clusters_ = false;
 
 
 ClusterVisual::ClusterPoints::ClusterPoints( Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node )
@@ -133,7 +148,10 @@ void ClusterVisual::ClusterPoints::setColor( float r, float g, float b, float a 
     (*it)->setColor( r, g, b, a );
   }
 
-  envelope_->setColor( r, g, b, a );
+  if ( show_clusters_ )
+  {
+    envelope_->setColor( r, g, b, a );
+  }
 }
 
 #include "Miniball.hpp"

@@ -47,8 +47,9 @@ public:
   // Set the color and alpha of the visual, which are user-editable
   // parameters and therefore don't come from the cluster message.
   void setColor( float r, float g, float b, float a );
-
   void setRadius( float r );
+  void setPointsShow( bool show_points );
+  void setClustersShow( bool show_clusters );
 
 private:
   // A SceneNode whose pose is set to match the coordinate frame of
@@ -85,6 +86,8 @@ private:
   std::vector<ClusterPointsPtr> clusters_;
 
   static float radius_;
+  static bool  show_points_;
+  static bool  show_clusters_;
 };
 
 } // end namespace rviz_algorithm_viewer

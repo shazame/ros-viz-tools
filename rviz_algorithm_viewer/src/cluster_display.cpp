@@ -17,6 +17,14 @@ namespace rviz_algorithm_viewer
 // constructor the parameters it needs to fully initialize.
 ClusterDisplay::ClusterDisplay()
 {
+  show_points_property_ = new rviz::BoolProperty( "Show points", true, 
+                                                  "Show every points.",
+                                                  this, SLOT( updatePointsAndClusters() ));
+
+  show_clusters_property_ = new rviz::BoolProperty( "Show clusters", false, 
+                                                    "Show a bounding sphere of the points of each cluster.",
+                                                    this, SLOT( updatePointsAndClusters() ));
+
   color_property_ = new rviz::ColorProperty( "Color", QColor( 204, 51, 204 ),
                                              "Color to draw the clusters.",
                                              this, SLOT( updateColorAndAlpha() ));
@@ -61,6 +69,19 @@ void ClusterDisplay::reset()
 {
   MFDClass::reset();
   visuals_.clear();
+}
+
+// Enable or disable points and clusters display
+void ClusterDisplay::updatePointsAndClusters()
+{
+  bool show_points   = show_points_property_->getBool();
+  bool show_clusters = show_clusters_property_->getBool();
+
+  for( size_t i = 0; i < visuals_.size(); i++ )
+  {
+    visuals_[ i ]->setPointsShow( show_points );
+    visuals_[ i ]->setClustersShow( show_clusters );
+  }
 }
 
 // Set the current color and alpha values for each visual.
@@ -125,6 +146,12 @@ void ClusterDisplay::processMessage( const rviz_algorithm_viewer::Cluster2::Cons
 
 void ClusterDisplay::initProperties(boost::shared_ptr<ClusterVisual> visual)
 {
+  bool show_points   = show_points_property_->getBool();
+  visual->setPointsShow( show_points );
+
+  bool show_clusters = show_clusters_property_->getBool();
+  visual->setClustersShow( show_clusters );
+
   float alpha = alpha_property_->getFloat();
   Ogre::ColourValue color = color_property_->getOgreColor();
   visual->setColor( color.r, color.g, color.b, alpha );
