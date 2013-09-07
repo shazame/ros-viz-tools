@@ -69,9 +69,16 @@ private:
       void clear();
       void addPoint( Ogre::Vector3 position );
       void setColor( float r, float g, float b, float a );
+      void displayPoints();
       void displayEnvelope();
 
     private:
+      // points position are always stored when a message is received
+      // hence they are separated from the point object
+      std::vector<Ogre::Vector3> points_pos_;
+      // points and their envelope are only displayed when the corresponding
+      // property is validated, thus the objects are only created when
+      // necessary
       typedef boost::shared_ptr<rviz::Shape> PointPtr;
       std::vector<PointPtr> points_;
       boost::shared_ptr<rviz::Shape> envelope_;

@@ -17,11 +17,11 @@ namespace rviz_algorithm_viewer
 // constructor the parameters it needs to fully initialize.
 ClusterDisplay::ClusterDisplay()
 {
-  show_points_property_ = new rviz::BoolProperty( "Show points", true, 
+  show_points_property_ = new rviz::BoolProperty( "Show points", false, 
                                                   "Show every points.",
                                                   this, SLOT( updatePointsAndClusters() ));
 
-  show_clusters_property_ = new rviz::BoolProperty( "Show clusters", false, 
+  show_clusters_property_ = new rviz::BoolProperty( "Show clusters", true, 
                                                     "Show a bounding sphere of the points of each cluster.",
                                                     this, SLOT( updatePointsAndClusters() ));
 

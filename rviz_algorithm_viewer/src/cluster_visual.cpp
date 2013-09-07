@@ -64,6 +64,11 @@ void ClusterVisual::setMessage( const rviz_algorithm_viewer::Cluster2::ConstPtr&
       //blue  = (pos.z + 20) / 40.;
     }
 
+    if ( show_points_ ) 
+    {
+      cluster_ptr->displayPoints();
+    }
+
     if ( show_clusters_ ) 
     {
       cluster_ptr->displayEnvelope();
@@ -84,7 +89,7 @@ void ClusterVisual::setFrameOrientation( const Ogre::Quaternion& orientation )
   frame_node_->setOrientation( orientation );
 }
 
-// Color is passed through to all the Shape objects.
+// Color is passed through to all the clusters.
 void ClusterVisual::setColor( float r, float g, float b, float a )
 {
   std::vector<ClusterPointsPtr>::iterator it = clusters_.begin();
@@ -111,8 +116,8 @@ void ClusterVisual::setClustersShow( bool show_clusters )
 }
 
 float ClusterVisual::radius_ = 0.2;
-bool  ClusterVisual::show_points_ = true;
-bool  ClusterVisual::show_clusters_ = false;
+bool  ClusterVisual::show_points_ = false;
+bool  ClusterVisual::show_clusters_ = true;
 
 
 ClusterVisual::ClusterPoints::ClusterPoints( Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node )
@@ -128,24 +133,20 @@ ClusterVisual::ClusterPoints::~ClusterPoints()
 
 void ClusterVisual::ClusterPoints::addPoint( Ogre::Vector3 position )
 {
-  // We create the sphere object within the frame node so that we can
-  // set its position and direction relative to its header frame.
-  PointPtr pts(new rviz::Shape( rviz::Shape::Sphere, scene_manager_, frame_node_));
-
-  Ogre::Vector3 scale( radius_, radius_, radius_ );
-  pts->setScale( scale );
-  pts->setPosition( position );
-
-  points_.push_back( pts );
+  points_pos_.push_back( position );
 }
 
+// Color is passed through to all the Shape objects.
 void ClusterVisual::ClusterPoints::setColor( float r, float g, float b, float a )
 {
-  std::vector<PointPtr>::iterator it = points_.begin();
-  std::vector<PointPtr>::iterator end = points_.end();
-  for (; it != end; ++it)
+  if ( show_points_ )
   {
-    (*it)->setColor( r, g, b, a );
+    std::vector<PointPtr>::iterator it = points_.begin();
+    std::vector<PointPtr>::iterator end = points_.end();
+    for (; it != end; ++it)
+    {
+      (*it)->setColor( r, g, b, a );
+    }
   }
 
   if ( show_clusters_ )
@@ -156,23 +157,40 @@ void ClusterVisual::ClusterPoints::setColor( float r, float g, float b, float a 
 
 #include "Miniball.hpp"
 
+void ClusterVisual::ClusterPoints::displayPoints()
+{
+  std::vector<Ogre::Vector3>::iterator pos_it = points_pos_.begin();
+  std::vector<Ogre::Vector3>::iterator pos_end = points_pos_.end();
+  for (; pos_it != pos_end; ++pos_it)
+  {
+    // We create the sphere object within the frame node so that we can
+    // set its position and direction relative to its header frame.
+    PointPtr pts(new rviz::Shape( rviz::Shape::Sphere, scene_manager_, frame_node_));
+
+    Ogre::Vector3 scale( radius_, radius_, radius_ );
+    pts->setScale( scale );
+    pts->setPosition( *pos_it );
+
+    points_.push_back( pts );
+  }
+}
+
 void ClusterVisual::ClusterPoints::displayEnvelope()
 {
   envelope_.reset( new rviz::Shape( rviz::Shape::Sphere, scene_manager_, frame_node_) );
 
-  // Convert vector of rviz::Shape to vector of array 
+  // Convert vector of Ogre::Vector3 to vector of array 
   // to allow iteration over coordinates
   std::vector<float*> vp;
-  std::vector<PointPtr>::iterator it = points_.begin();
-  std::vector<PointPtr>::iterator end = points_.end();
+  std::vector<Ogre::Vector3>::iterator it = points_pos_.begin();
+  std::vector<Ogre::Vector3>::iterator end = points_pos_.end();
   for (; it != end; ++it)
   {
     // The coordinates are stored in an array
     float* p = new float[3];
-    Ogre::Vector3 pos = (*it)->getPosition();
-    p[0] = pos.x;
-    p[1] = pos.y;
-    p[2] = pos.z;
+    p[0] = (*it).x;
+    p[1] = (*it).y;
+    p[2] = (*it).z;
 
     vp.push_back(p);
   }
