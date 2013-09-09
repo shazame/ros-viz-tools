@@ -47,6 +47,7 @@ protected:
   // These Qt slots get connected to signals indicating changes in the user-editable properties.
 private Q_SLOTS:
   void updateColorAndAlpha();
+  void updateRadius();
   void updateHistoryLength();
   void updatePointsAndClusters();
 
@@ -61,10 +62,10 @@ private:
   boost::circular_buffer<boost::shared_ptr<ClusterVisual> > visuals_;
 
   // User-editable property variables.
-  rviz::BoolProperty*  show_points_property_, *show_clusters_property_;
-  rviz::ColorProperty* color_property_;
-  rviz::FloatProperty* alpha_property_, *radius_property_;
-  rviz::IntProperty*   history_length_property_;
+  rviz::BoolProperty  *show_points_property_, *show_clusters_property_;
+  rviz::ColorProperty *color_property_;
+  rviz::FloatProperty *alpha_property_, *radius_property_;
+  rviz::IntProperty   *history_length_property_;
 };
 
 } // end namespace rviz_algorithm_viewer

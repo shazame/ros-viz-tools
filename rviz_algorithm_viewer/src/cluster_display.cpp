@@ -35,7 +35,7 @@ ClusterDisplay::ClusterDisplay()
 
   radius_property_ = new rviz::FloatProperty( "Radius", 0.2,
                                               "Radius of a point.",
-                                              this, SLOT( updateColorAndAlpha() ));
+                                              this, SLOT( updateRadius() ));
 
   history_length_property_ = new rviz::IntProperty( "History Length", 1,
                                                     "Number of prior measurements to display.",
@@ -88,12 +88,21 @@ void ClusterDisplay::updatePointsAndClusters()
 void ClusterDisplay::updateColorAndAlpha()
 {
   float alpha  = alpha_property_->getFloat();
-  float radius = radius_property_->getFloat();
   Ogre::ColourValue color = color_property_->getOgreColor();
 
   for( size_t i = 0; i < visuals_.size(); i++ )
   {
     visuals_[ i ]->setColor( color.r, color.g, color.b, alpha );
+  }
+}
+
+// Set the current radius value for each visual.
+void ClusterDisplay::updateRadius()
+{
+  float radius = radius_property_->getFloat();
+
+  for( size_t i = 0; i < visuals_.size(); i++ )
+  {
     visuals_[ i ]->setRadius( radius );
   }
 }
