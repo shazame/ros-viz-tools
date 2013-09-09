@@ -62,6 +62,7 @@ private:
   boost::circular_buffer<boost::shared_ptr<ClusterVisual> > visuals_;
 
   // User-editable property variables.
+  rviz::BoolProperty  *pause_display_property_;
   rviz::BoolProperty  *show_points_property_, *show_clusters_property_;
   rviz::ColorProperty *color_property_;
   rviz::FloatProperty *alpha_property_, *radius_property_;

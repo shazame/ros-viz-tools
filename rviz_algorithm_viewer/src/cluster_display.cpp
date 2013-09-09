@@ -17,6 +17,10 @@ namespace rviz_algorithm_viewer
 // constructor the parameters it needs to fully initialize.
 ClusterDisplay::ClusterDisplay()
 {
+  pause_display_property_ = new rviz::BoolProperty( "Pause", false, 
+                                                    "Stop processing new messages to pause the display.",
+                                                    this );
+
   show_points_property_ = new rviz::BoolProperty( "Show points", false, 
                                                   "Show every points.",
                                                   this, SLOT( updatePointsAndClusters() ));
@@ -116,6 +120,12 @@ void ClusterDisplay::updateHistoryLength()
 // This is our callback to handle an incoming message.
 void ClusterDisplay::processMessage( const rviz_algorithm_viewer::Cluster2::ConstPtr& msg )
 {
+  // When pause is activated, messages are not processed
+  if ( pause_display_property_->getBool() )
+  {
+    return;
+  }
+
   // Here we call the rviz::FrameManager to get the transform from the
   // fixed frame to the frame in the header of this Cluster message.  If
   // it fails, we can't do anything else so we return.
