@@ -103,6 +103,13 @@ void ClusterVisual::setColor( float r, float g, float b, float a )
 void ClusterVisual::setRadius( float r )
 {
   radius_ = r;
+
+  std::vector<ClusterPointsPtr>::iterator it = clusters_.begin();
+  std::vector<ClusterPointsPtr>::iterator end = clusters_.end();
+  for (; it != end; ++it)
+  {
+    (*it)->setRadius( radius_ );
+  }
 }
 
 void ClusterVisual::setPointsShow( bool show_points )
@@ -155,7 +162,21 @@ void ClusterVisual::ClusterPoints::setColor( float r, float g, float b, float a 
   }
 }
 
-#include "Miniball.hpp"
+// Radius is passed through to all the Shape objects.
+void ClusterVisual::ClusterPoints::setRadius( float r )
+{
+  Ogre::Vector3 scale( r, r, r );
+
+  if ( show_points_ )
+  {
+    std::vector<PointPtr>::iterator it = points_.begin();
+    std::vector<PointPtr>::iterator end = points_.end();
+    for (; it != end; ++it)
+    {
+      (*it)->setScale( scale );
+    }
+  }
+}
 
 void ClusterVisual::ClusterPoints::displayPoints()
 {
@@ -174,6 +195,8 @@ void ClusterVisual::ClusterPoints::displayPoints()
     points_.push_back( pts );
   }
 }
+
+#include "Miniball.hpp"
 
 void ClusterVisual::ClusterPoints::displayEnvelope()
 {

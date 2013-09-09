@@ -69,6 +69,7 @@ private:
       void clear();
       void addPoint( Ogre::Vector3 position );
       void setColor( float r, float g, float b, float a );
+      void setRadius( float r );
       void displayPoints();
       void displayEnvelope();
 
