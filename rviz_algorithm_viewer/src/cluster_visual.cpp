@@ -113,14 +113,50 @@ void ClusterVisual::setRadius( float r )
   }
 }
 
+// Property state is save and points are instantaneously displayed or removed
 void ClusterVisual::setPointsShow( bool show_points )
 {
   show_points_ = show_points;
+
+  std::vector<ClusterPointsPtr>::iterator it = clusters_.begin();
+  std::vector<ClusterPointsPtr>::iterator end = clusters_.end();
+  if ( show_points_ )
+  {
+    for (; it != end; ++it)
+    {
+      (*it)->displayPoints();
+    }
+  }
+  else
+  {
+    for (; it != end; ++it)
+    {
+      (*it)->clearPoints();
+    }
+  }
 }
 
+// Property state is save and envelope are instantaneously displayed or removed
 void ClusterVisual::setClustersShow( bool show_clusters )
 {
   show_clusters_ = show_clusters;
+
+  std::vector<ClusterPointsPtr>::iterator it = clusters_.begin();
+  std::vector<ClusterPointsPtr>::iterator end = clusters_.end();
+  if ( show_clusters_ )
+  {
+    for (; it != end; ++it)
+    {
+      (*it)->displayEnvelope();
+    }
+  }
+  else
+  {
+    for (; it != end; ++it)
+    {
+      (*it)->clearEnvelope();
+    }
+  }
 }
 
 float ClusterVisual::radius_ = 0.2;
@@ -197,6 +233,11 @@ void ClusterVisual::ClusterPoints::displayPoints()
   }
 }
 
+void ClusterVisual::ClusterPoints::clearPoints()
+{
+  points_.clear();
+}
+
 #include "Miniball.hpp"
 
 void ClusterVisual::ClusterPoints::displayEnvelope()
@@ -247,6 +288,11 @@ void ClusterVisual::ClusterPoints::displayEnvelope()
   for (std::vector<float*>::iterator it = vp.begin(); it != vp.end(); ++it) {
     delete[] *it;
   }
+}
+
+void ClusterVisual::ClusterPoints::clearEnvelope()
+{
+  envelope_.reset();
 }
 
 } // end namespace rviz_algorithm_viewer

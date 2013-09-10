@@ -66,12 +66,15 @@ private:
       ClusterPoints( Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node );
       ~ClusterPoints();
 
-      void clear();
       void addPoint( Ogre::Vector3 position );
       void setColor( float r, float g, float b, float a );
       void setRadius( float r );
+
       void displayPoints();
+      void clearPoints();
+
       void displayEnvelope();
+      void clearEnvelope();
 
     private:
       // points position are always stored when a message is received
