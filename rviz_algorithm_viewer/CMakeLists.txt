@@ -45,6 +45,7 @@ include_directories(
 ## Qt's meta-object compiler.
 qt4_wrap_cpp(MOC_FILES
   src/cluster_display.h
+  src/color_transformer.h
 )
 
 ## Here we specify the list of source files, including the output of
@@ -52,6 +53,7 @@ qt4_wrap_cpp(MOC_FILES
 set(SOURCE_FILES
   src/cluster_display.cpp
   src/cluster_visual.cpp
+  src/color_transformer.cpp
   ${MOC_FILES}
 )
 

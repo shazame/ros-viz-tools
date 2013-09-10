@@ -6,6 +6,8 @@
 #include <rviz_algorithm_viewer/Cluster2.h>
 #include <rviz/message_filter_display.h>
 
+#include "color_transformer.h"
+
 namespace Ogre
 {
 class SceneNode;
@@ -46,10 +48,12 @@ protected:
 
   // These Qt slots get connected to signals indicating changes in the user-editable properties.
 private Q_SLOTS:
-  void updateColorAndAlpha();
+  void updatePointsAndClusters();
   void updateRadius();
   void updateHistoryLength();
-  void updatePointsAndClusters();
+
+  void updateColorTransformer();
+  void updateColorAndAlpha();
 
   // Function to handle an incoming ROS message.
 private:
@@ -64,9 +68,10 @@ private:
   // User-editable property variables.
   rviz::BoolProperty  *pause_display_property_;
   rviz::BoolProperty  *show_points_property_, *show_clusters_property_;
-  rviz::ColorProperty *color_property_;
   rviz::FloatProperty *alpha_property_, *radius_property_;
   rviz::IntProperty   *history_length_property_;
+
+  ColorTransformer *color_transformer_;
 };
 
 } // end namespace rviz_algorithm_viewer

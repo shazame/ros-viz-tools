@@ -28,9 +28,6 @@ ClusterDisplay::ClusterDisplay()
                                                     "Show a bounding sphere of the points of each cluster.",
                                                     this, SLOT( updatePointsAndClusters() ));
 
-  color_property_ = new rviz::ColorProperty( "Color", QColor( 204, 51, 204 ),
-                                             "Color to draw the clusters.",
-                                             this, SLOT( updateColorAndAlpha() ));
   radius_property_ = new rviz::FloatProperty( "Radius", 0.2,
                                               "Radius of a point.",
                                               this, SLOT( updateRadius() ));
@@ -42,6 +39,7 @@ ClusterDisplay::ClusterDisplay()
   alpha_property_->setMin( 0 );
   alpha_property_->setMax( 1 );
 
+  color_transformer_ = new ColorTransformer( this );
 
   history_length_property_ = new rviz::IntProperty( "History Length", 1,
                                                     "Number of prior measurements to display.",
@@ -94,7 +92,7 @@ void ClusterDisplay::updatePointsAndClusters()
 void ClusterDisplay::updateColorAndAlpha()
 {
   float alpha  = alpha_property_->getFloat();
-  Ogre::ColourValue color = color_property_->getOgreColor();
+  Ogre::ColourValue color = color_transformer_->getFlatColor();
 
   for( size_t i = 0; i < visuals_.size(); i++ )
   {
@@ -110,6 +108,25 @@ void ClusterDisplay::updateRadius()
   for( size_t i = 0; i < visuals_.size(); i++ )
   {
     visuals_[ i ]->setRadius( radius );
+  }
+}
+
+void ClusterDisplay::updateColorTransformer()
+{
+  ColorTransformer::ColorType enabled_color_type = color_transformer_->getColorType();
+
+  color_transformer_->updateProperties( enabled_color_type );
+
+  switch ( enabled_color_type )
+  {
+    COLOR_FLAT:
+      break;
+    COLOR_AXIS:
+      break;
+    COLOR_CLUSTER:
+      break;
+    default:
+      break;
   }
 }
 
@@ -174,7 +191,7 @@ void ClusterDisplay::initProperties(boost::shared_ptr<ClusterVisual> visual)
   visual->setClustersShow( show_clusters );
 
   float alpha = alpha_property_->getFloat();
-  Ogre::ColourValue color = color_property_->getOgreColor();
+  Ogre::ColourValue color = color_transformer_->getFlatColor();
   visual->setColor( color.r, color.g, color.b, alpha );
 
   float radius = radius_property_->getFloat();
