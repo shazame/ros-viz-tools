@@ -2,7 +2,6 @@
 #include <OGRE/OgreSceneManager.h>
 
 #include <rviz/visualization_manager.h>
-#include <rviz/properties/color_property.h>
 #include <rviz/properties/float_property.h>
 #include <rviz/properties/int_property.h>
 #include <rviz/frame_manager.h>
@@ -32,14 +31,17 @@ ClusterDisplay::ClusterDisplay()
   color_property_ = new rviz::ColorProperty( "Color", QColor( 204, 51, 204 ),
                                              "Color to draw the clusters.",
                                              this, SLOT( updateColorAndAlpha() ));
+  radius_property_ = new rviz::FloatProperty( "Radius", 0.2,
+                                              "Radius of a point.",
+                                              this, SLOT( updateRadius() ));
+  radius_property_->setMin( 0.0001 );
 
   alpha_property_ = new rviz::FloatProperty( "Alpha", 1.0,
                                              "0 is fully transparent, 1.0 is fully opaque.",
                                              this, SLOT( updateColorAndAlpha() ));
+  alpha_property_->setMin( 0 );
+  alpha_property_->setMax( 1 );
 
-  radius_property_ = new rviz::FloatProperty( "Radius", 0.2,
-                                              "Radius of a point.",
-                                              this, SLOT( updateRadius() ));
 
   history_length_property_ = new rviz::IntProperty( "History Length", 1,
                                                     "Number of prior measurements to display.",

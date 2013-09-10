@@ -100,6 +100,7 @@ void ClusterVisual::setColor( float r, float g, float b, float a )
   }
 }
 
+// Radius is passed through to all the clusters.
 void ClusterVisual::setRadius( float r )
 {
   radius_ = r;
@@ -218,7 +219,7 @@ void ClusterVisual::ClusterPoints::displayEnvelope()
     vp.push_back(p);
   }
 
-  // define the types of iterators through the points and their coordinates
+  // Define the types of iterators through the points and their coordinates
   typedef std::vector<float*>::const_iterator PointIterator;
   typedef const float* CoordIterator;
 
@@ -242,7 +243,7 @@ void ClusterVisual::ClusterPoints::displayEnvelope()
   envelope_->setScale( diameter );
   envelope_->setPosition( centerPos );
 
-  // clean up
+  // Clean up
   for (std::vector<float*>::iterator it = vp.begin(); it != vp.end(); ++it) {
     delete[] *it;
   }
