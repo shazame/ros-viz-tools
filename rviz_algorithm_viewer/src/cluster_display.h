@@ -53,7 +53,8 @@ private Q_SLOTS:
   void updateHistoryLength();
 
   void updateColorTransformer();
-  void updateColorAndAlpha();
+  void updateAlpha();
+  void updateColor();
 
   // Function to handle an incoming ROS message.
 private:

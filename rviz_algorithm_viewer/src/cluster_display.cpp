@@ -35,7 +35,7 @@ ClusterDisplay::ClusterDisplay()
 
   alpha_property_ = new rviz::FloatProperty( "Alpha", 1.0,
                                              "0 is fully transparent, 1.0 is fully opaque.",
-                                             this, SLOT( updateColorAndAlpha() ));
+                                             this, SLOT( updateAlpha() ));
   alpha_property_->setMin( 0 );
   alpha_property_->setMax( 1 );
 
@@ -85,20 +85,31 @@ void ClusterDisplay::updatePointsAndClusters()
   {
     visuals_[ i ]->setPointsShow( show_points );
     visuals_[ i ]->setClustersShow( show_clusters );
-    visuals_[ i ]->updateColor();
+    visuals_[ i ]->updateColorAndAlpha();
   }
 }
 
-// Set the current color and alpha values for each visual.
-void ClusterDisplay::updateColorAndAlpha()
+// Set the current alpha values for each visual.
+void ClusterDisplay::updateAlpha()
 {
   float alpha  = alpha_property_->getFloat();
+
+  for( size_t i = 0; i < visuals_.size(); i++ )
+  {
+    visuals_[ i ]->setAlpha( alpha );
+    visuals_[ i ]->updateColorAndAlpha();
+  }
+}
+
+// Set the current color values for each visual.
+void ClusterDisplay::updateColor()
+{
   Ogre::ColourValue color = color_transformer_->getFlatColor();
 
   for( size_t i = 0; i < visuals_.size(); i++ )
   {
-    visuals_[ i ]->setColor( color.r, color.g, color.b, alpha );
-    visuals_[ i ]->updateColor();
+    visuals_[ i ]->setColor( color.r, color.g, color.b );
+    visuals_[ i ]->updateColorAndAlpha();
   }
 }
 
@@ -192,9 +203,10 @@ void ClusterDisplay::initProperties(boost::shared_ptr<ClusterVisual> visual)
   visual->setClustersShow( show_clusters );
 
   float alpha = alpha_property_->getFloat();
+  visual->setAlpha( alpha );
   Ogre::ColourValue color = color_transformer_->getFlatColor();
-  visual->setColor( color.r, color.g, color.b, alpha );
-  visual->updateColor();
+  visual->setColor( color.r, color.g, color.b );
+  visual->updateColorAndAlpha();
 
   float radius = radius_property_->getFloat();
   visual->setRadius( radius );

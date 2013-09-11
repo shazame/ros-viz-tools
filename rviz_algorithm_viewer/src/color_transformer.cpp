@@ -22,7 +22,7 @@ ColorTransformer::ColorTransformer( rviz::Property* parent_property )
 
   flat_color_property_ = new rviz::ColorProperty( "Color", QColor( 204, 51, 204 ),
                                              "Color to draw the clusters.",
-                                             color_transformer_property_, SLOT( updateColorAndAlpha() ), parent_property );
+                                             color_transformer_property_, SLOT( updateColor() ), parent_property );
 
 }
 

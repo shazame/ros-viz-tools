@@ -47,8 +47,9 @@ public:
 
   // Set the color and alpha of the visual, which are user-editable
   // parameters and therefore don't come from the cluster message.
-  void setColor( float r, float g, float b, float a );
-  void updateColor();
+  void setAlpha( float a );
+  void setColor( float r, float g, float b  );
+  void updateColorAndAlpha();
   void setRadius( float r );
   void setPointsShow( bool show_points );
   void setClustersShow( bool show_clusters );
@@ -69,8 +70,8 @@ private:
       ~ClusterPoints();
 
       void addPoint( Ogre::Vector3 position );
-      void setPointsColor( float r, float g, float b, float a );
-      void updatePointsColor();
+      void setPointsColor( float r, float g, float b );
+      void updatePointsColorAndAlpha();
       void setPointsRadius( float r );
 
       void displayPoints();
@@ -105,6 +106,7 @@ private:
 
   // Global properties applied to every cluster
   static float radius_;
+  static float alpha_;
   static bool  show_points_;
   static bool  show_clusters_;
 };
