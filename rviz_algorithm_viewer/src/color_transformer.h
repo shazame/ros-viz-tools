@@ -33,13 +33,21 @@ public:
   ColorType         getColorType() const;
   Ogre::ColourValue getFlatColor() const;
 
-  void set( float r, float g, float b, float a );
+  //void set( float r, float g, float b, float a );
 
 private:
+  void createFlatProperties   ( rviz::Property* grandparent_property, rviz::Property* parent_property );
+  void createAxisProperties   ( rviz::Property* grandparent_property, rviz::Property* parent_property );
+  void createClusterProperties( rviz::Property* grandparent_property, rviz::Property* parent_property );
 
-  float r_, b_, g_, a_;
+  void setHiddenFlatProperties   ( bool hide );
+  void setHiddenAxisProperties   ( bool hide );
+  void setHiddenClusterProperties( bool hide );
+
+  //float r_, b_, g_, a_;
 
   rviz::EnumProperty  *color_transformer_property_;
+
   rviz::ColorProperty *flat_color_property_;
 };
 

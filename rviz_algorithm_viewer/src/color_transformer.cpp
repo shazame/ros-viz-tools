@@ -17,12 +17,44 @@ ColorTransformer::ColorTransformer( rviz::Property* parent_property )
                                                         parent_property, SLOT( updateColorTransformer() ));
 
   color_transformer_property_->addOption( "FlatColor"   , COLOR_FLAT );
-  color_transformer_property_->addOption( "AxisColor"   , COLOR_AXIS );
-  color_transformer_property_->addOption( "ClusterColor", COLOR_CLUSTER );
+  createFlatProperties( parent_property, color_transformer_property_ );
 
+  color_transformer_property_->addOption( "AxisColor"   , COLOR_AXIS );
+  createAxisProperties( parent_property, color_transformer_property_ );
+
+  color_transformer_property_->addOption( "ClusterColor", COLOR_CLUSTER );
+  createClusterProperties( parent_property, color_transformer_property_ );
+}
+
+void ColorTransformer::createFlatProperties( rviz::Property* grandparent_property, rviz::Property* parent_property )
+{
   flat_color_property_ = new rviz::ColorProperty( "Color", QColor( 204, 51, 204 ),
                                              "Color to draw the clusters.",
-                                             color_transformer_property_, SLOT( updateFlatColor() ), parent_property );
+                                             parent_property, SLOT( updateFlatColor() ), grandparent_property );
+}
+
+void ColorTransformer::createAxisProperties( rviz::Property* grandparent_property, rviz::Property* parent_property )
+{
+
+}
+
+void ColorTransformer::createClusterProperties( rviz::Property* grandparent_property, rviz::Property* parent_property )
+{
+
+}
+
+void ColorTransformer::setHiddenFlatProperties( bool hide )
+{
+  flat_color_property_->setHidden( hide );
+}
+
+void ColorTransformer::setHiddenAxisProperties( bool hide )
+{
+
+}
+
+void ColorTransformer::setHiddenClusterProperties( bool hide )
+{
 
 }
 
@@ -32,22 +64,11 @@ ColorTransformer::~ColorTransformer()
 
 void ColorTransformer::updateProperties( ColorType enabled_color_type )
 {
-  switch ( enabled_color_type )
-  {
-    case COLOR_FLAT:
-      flat_color_property_->setHidden( false );
-      color_transformer_property_->expand();
-      break;
-    case COLOR_AXIS:
-      flat_color_property_->setHidden( true );
-      break;
-    case COLOR_CLUSTER:
-      flat_color_property_->setHidden( true );
-      break;
-    default:
-      ROS_DEBUG( "Error setting the color type." );
-      break;
-  }
+  setHiddenFlatProperties   ( enabled_color_type != COLOR_FLAT    );
+  setHiddenAxisProperties   ( enabled_color_type != COLOR_AXIS    );
+  setHiddenClusterProperties( enabled_color_type != COLOR_CLUSTER );
+
+  color_transformer_property_->expand();
 }
 
 ColorTransformer::ColorType ColorTransformer::getColorType() const
@@ -60,8 +81,8 @@ Ogre::ColourValue ColorTransformer::getFlatColor() const
   return flat_color_property_->getOgreColor();
 }
 
-void ColorTransformer::set( float r, float g, float b, float a )
-{
-}
+//void ColorTransformer::set( float r, float g, float b, float a )
+//{
+//}
 
 } // end namespace rviz_algorithm_viewer
