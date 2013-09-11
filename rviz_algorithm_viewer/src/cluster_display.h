@@ -50,11 +50,12 @@ protected:
 private Q_SLOTS:
   void updatePointsAndClusters();
   void updateRadius();
-  void updateHistoryLength();
+  void updateAlpha();
 
   void updateColorTransformer();
-  void updateAlpha();
   void updateFlatColor();
+
+  void updateHistoryLength();
 
   // Function to handle an incoming ROS message.
 private:

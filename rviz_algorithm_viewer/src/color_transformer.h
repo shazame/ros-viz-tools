@@ -12,8 +12,8 @@ namespace rviz
 {
   class Property;
   class EnumProperty;
+  class BoolProperty;
   class ColorProperty;
-  //class BoolProperty;
 }
 
 namespace rviz_algorithm_viewer
@@ -35,6 +35,9 @@ public:
 
   //void set( float r, float g, float b, float a );
 
+private Q_SLOTS:
+  void updateUseRainbow();
+
 private:
   void createFlatProperties   ( rviz::Property* grandparent_property, rviz::Property* parent_property );
   void createAxisProperties   ( rviz::Property* grandparent_property, rviz::Property* parent_property );
@@ -48,7 +51,13 @@ private:
 
   rviz::EnumProperty  *color_transformer_property_;
 
+  // Properties for the flat color transformer
   rviz::ColorProperty *flat_color_property_;
+
+  // Properties for the cluster color transformer
+  rviz::BoolProperty  *use_rainbow_property_;
+  rviz::ColorProperty *min_color_property_;
+  rviz::ColorProperty *max_color_property_;
 };
 
 } // end namespace rviz_algorithm_viewer
