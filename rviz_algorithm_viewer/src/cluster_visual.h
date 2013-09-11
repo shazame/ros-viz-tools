@@ -48,7 +48,7 @@ public:
   // Set the color and alpha of the visual, which are user-editable
   // parameters and therefore don't come from the cluster message.
   void setAlpha( float a );
-  void setColor( float r, float g, float b  );
+  void setFlatColor( float r, float g, float b  );
   void updateColorAndAlpha();
   void setRadius( float r );
   void setPointsShow( bool show_points );

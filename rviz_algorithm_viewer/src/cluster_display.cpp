@@ -102,13 +102,13 @@ void ClusterDisplay::updateAlpha()
 }
 
 // Set the current color values for each visual.
-void ClusterDisplay::updateColor()
+void ClusterDisplay::updateFlatColor()
 {
   Ogre::ColourValue color = color_transformer_->getFlatColor();
 
   for( size_t i = 0; i < visuals_.size(); i++ )
   {
-    visuals_[ i ]->setColor( color.r, color.g, color.b );
+    visuals_[ i ]->setFlatColor( color.r, color.g, color.b );
     visuals_[ i ]->updateColorAndAlpha();
   }
 }
@@ -205,7 +205,7 @@ void ClusterDisplay::initProperties(boost::shared_ptr<ClusterVisual> visual)
   float alpha = alpha_property_->getFloat();
   visual->setAlpha( alpha );
   Ogre::ColourValue color = color_transformer_->getFlatColor();
-  visual->setColor( color.r, color.g, color.b );
+  visual->setFlatColor( color.r, color.g, color.b );
   visual->updateColorAndAlpha();
 
   float radius = radius_property_->getFloat();

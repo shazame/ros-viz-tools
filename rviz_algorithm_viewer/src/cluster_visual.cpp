@@ -108,7 +108,7 @@ void ClusterVisual::setAlpha( float a )
 }
 
 // Color is passed through to all the clusters.
-void ClusterVisual::setColor( float r, float g, float b )
+void ClusterVisual::setFlatColor( float r, float g, float b )
 {
   std::vector<ClusterPointsPtr>::iterator it = clusters_.begin();
   std::vector<ClusterPointsPtr>::iterator end = clusters_.end();
