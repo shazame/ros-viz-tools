@@ -100,6 +100,17 @@ void ClusterVisual::setColor( float r, float g, float b, float a )
   }
 }
 
+// Color is updated through to all the clusters.
+void ClusterVisual::updateColor()
+{
+  std::vector<ClusterPointsPtr>::iterator it = clusters_.begin();
+  std::vector<ClusterPointsPtr>::iterator end = clusters_.end();
+  for (; it != end; ++it)
+  {
+    (*it)->updatePointsColor();
+  }
+}
+
 // Radius is passed through to all the clusters.
 void ClusterVisual::setRadius( float r )
 {
@@ -183,19 +194,25 @@ void ClusterVisual::ClusterPoints::addPoint( Ogre::Vector3 position )
 // Color is passed through to all the Shape objects.
 void ClusterVisual::ClusterPoints::setPointsColor( float r, float g, float b, float a )
 {
+  color_.reset( new Ogre::ColourValue( r, g, b, a ) );
+}
+
+// Color is updated through to all the Shape objects.
+void ClusterVisual::ClusterPoints::updatePointsColor()
+{
   if ( show_points_ )
   {
     std::vector<PointPtr>::iterator it = points_.begin();
     std::vector<PointPtr>::iterator end = points_.end();
     for (; it != end; ++it)
     {
-      (*it)->setColor( r, g, b, a );
+      (*it)->setColor( color_->r, color_->g, color_->b, color_->a );
     }
   }
 
   if ( show_clusters_ )
   {
-    envelope_->setColor( r, g, b, a );
+    envelope_->setColor( color_->r, color_->g, color_->b, color_->a );
   }
 }
 

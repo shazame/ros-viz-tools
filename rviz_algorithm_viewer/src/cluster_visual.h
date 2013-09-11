@@ -9,6 +9,7 @@ namespace Ogre
 {
 class Vector3;
 class Quaternion;
+class ColourValue;
 }
 
 namespace rviz
@@ -47,6 +48,7 @@ public:
   // Set the color and alpha of the visual, which are user-editable
   // parameters and therefore don't come from the cluster message.
   void setColor( float r, float g, float b, float a );
+  void updateColor();
   void setRadius( float r );
   void setPointsShow( bool show_points );
   void setClustersShow( bool show_clusters );
@@ -68,6 +70,7 @@ private:
 
       void addPoint( Ogre::Vector3 position );
       void setPointsColor( float r, float g, float b, float a );
+      void updatePointsColor();
       void setPointsRadius( float r );
 
       void displayPoints();
@@ -86,6 +89,10 @@ private:
       typedef boost::shared_ptr<rviz::Shape> PointPtr;
       std::vector<PointPtr> points_;
       boost::shared_ptr<rviz::Shape> envelope_;
+
+      // Color of each cluster needs to be remembered when display is paused
+      // and clusters are hide/shown
+      boost::shared_ptr<Ogre::ColourValue> color_;
 
       Ogre::SceneNode* frame_node_;
       Ogre::SceneManager* scene_manager_;

@@ -85,6 +85,7 @@ void ClusterDisplay::updatePointsAndClusters()
   {
     visuals_[ i ]->setPointsShow( show_points );
     visuals_[ i ]->setClustersShow( show_clusters );
+    visuals_[ i ]->updateColor();
   }
 }
 
@@ -97,6 +98,7 @@ void ClusterDisplay::updateColorAndAlpha()
   for( size_t i = 0; i < visuals_.size(); i++ )
   {
     visuals_[ i ]->setColor( color.r, color.g, color.b, alpha );
+    visuals_[ i ]->updateColor();
   }
 }
 
@@ -175,7 +177,6 @@ void ClusterDisplay::processMessage( const rviz_algorithm_viewer::Cluster2::Cons
   visual->setMessage( msg );
   visual->setFramePosition( position );
   visual->setFrameOrientation( orientation );
-
   initProperties( visual );
 
   // And send it to the end of the circular buffer
@@ -193,6 +194,7 @@ void ClusterDisplay::initProperties(boost::shared_ptr<ClusterVisual> visual)
   float alpha = alpha_property_->getFloat();
   Ogre::ColourValue color = color_transformer_->getFlatColor();
   visual->setColor( color.r, color.g, color.b, alpha );
+  visual->updateColor();
 
   float radius = radius_property_->getFloat();
   visual->setRadius( radius );
