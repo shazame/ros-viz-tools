@@ -5,6 +5,8 @@
 
 #include "color_transformer.h"
 
+#include <ros/ros.h>
+
 namespace rviz_algorithm_viewer
 {
 
@@ -43,6 +45,7 @@ void ColorTransformer::updateProperties( ColorType enabled_color_type )
       flat_color_property_->setHidden( true );
       break;
     default:
+      ROS_DEBUG( "Error setting the color type." );
       break;
   }
 }

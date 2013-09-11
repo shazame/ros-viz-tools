@@ -67,8 +67,8 @@ private:
       ~ClusterPoints();
 
       void addPoint( Ogre::Vector3 position );
-      void setColor( float r, float g, float b, float a );
-      void setRadius( float r );
+      void setPointsColor( float r, float g, float b, float a );
+      void setPointsRadius( float r );
 
       void displayPoints();
       void clearPoints();
@@ -96,6 +96,7 @@ private:
   // The object implementing the actual point cluster
   std::vector<ClusterPointsPtr> clusters_;
 
+  // Global properties applied to every cluster
   static float radius_;
   static bool  show_points_;
   static bool  show_clusters_;
