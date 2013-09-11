@@ -132,6 +132,12 @@ void ClusterVisual::updateColorAndAlpha()
 // Property state is save and points are instantaneously displayed or removed
 void ClusterVisual::setPointsShow( bool show_points )
 {
+  // Do not recreate points if already existing
+  if ( show_points_ == show_points )
+  {
+    return;
+  }
+
   show_points_ = show_points;
 
   std::vector<ClusterPointsPtr>::iterator it = clusters_.begin();
@@ -155,6 +161,12 @@ void ClusterVisual::setPointsShow( bool show_points )
 // Property state is save and envelope are instantaneously displayed or removed
 void ClusterVisual::setClustersShow( bool show_clusters )
 {
+  // Do not recreate clusters if already existing
+  if ( show_clusters_ == show_clusters )
+  {
+    return;
+  }
+
   show_clusters_ = show_clusters;
 
   std::vector<ClusterPointsPtr>::iterator it = clusters_.begin();
