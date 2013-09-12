@@ -10,7 +10,7 @@ import tf
 cluster_radius = 5
 max_cluster_pts = 50
 max_clusters = 15
-fps = 0.1
+fps = 10
 
 def rand_cluster(n, c_x, c_y, c_z):
   """x, y and z are the coordinates of the cluster center"""

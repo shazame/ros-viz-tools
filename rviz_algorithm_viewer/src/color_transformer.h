@@ -11,10 +11,10 @@ class Vector3;
 
 namespace rviz
 {
-  class Property;
-  class EnumProperty;
-  class BoolProperty;
-  class ColorProperty;
+class Property;
+class EnumProperty;
+class BoolProperty;
+class ColorProperty;
 }
 
 namespace rviz_algorithm_viewer
