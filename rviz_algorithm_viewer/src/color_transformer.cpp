@@ -1,4 +1,5 @@
 #include <OGRE/OgreColourValue.h>
+#include <OGRE/OgreVector3.h>
 
 #include <rviz/properties/enum_property.h>
 #include <rviz/properties/bool_property.h>
@@ -106,6 +107,15 @@ ColorTransformer::ColorType ColorTransformer::getColorType() const
 Ogre::ColourValue ColorTransformer::getFlatColor() const
 {
   return flat_color_property_->getOgreColor();
+}
+
+Ogre::ColourValue ColorTransformer::getAxisColor( Ogre::Vector3 pos, Ogre::Vector3 min_pos, Ogre::Vector3 max_pos )
+{
+  Ogre::ColourValue color( 
+      (pos.x - min_pos.x) / (max_pos.x - min_pos.x),
+      (pos.y - min_pos.y) / (max_pos.y - min_pos.y),
+      (pos.z - min_pos.z) / (max_pos.z - min_pos.z) );
+  return color;
 }
 
 //void ColorTransformer::set( float r, float g, float b, float a )

@@ -113,6 +113,15 @@ void ClusterDisplay::updateFlatColor()
   }
 }
 
+void ClusterDisplay::updateAxisColor()
+{
+  for( size_t i = 0; i < visuals_.size(); i++ )
+  {
+    visuals_[ i ]->setAxisColor();
+    visuals_[ i ]->updateColorAndAlpha();
+  }
+}
+
 // Set the current radius value for each visual.
 void ClusterDisplay::updateRadius()
 {
@@ -132,11 +141,13 @@ void ClusterDisplay::updateColorTransformer()
 
   switch ( enabled_color_type )
   {
-    COLOR_FLAT:
+    case ColorTransformer::COLOR_FLAT:
+      updateFlatColor();
       break;
-    COLOR_AXIS:
+    case ColorTransformer::COLOR_AXIS:
+      updateAxisColor();
       break;
-    COLOR_CLUSTER:
+    case ColorTransformer::COLOR_CLUSTER:
       break;
     default:
       break;
@@ -204,9 +215,24 @@ void ClusterDisplay::initProperties(boost::shared_ptr<ClusterVisual> visual)
 
   float alpha = alpha_property_->getFloat();
   visual->setAlpha( alpha );
+
   Ogre::ColourValue color = color_transformer_->getFlatColor();
-  visual->setFlatColor( color.r, color.g, color.b );
-  visual->updateColorAndAlpha();
+  ColorTransformer::ColorType enabled_color_type = color_transformer_->getColorType();
+  switch ( enabled_color_type ) 
+  {
+    case ColorTransformer::COLOR_FLAT:
+      visual->setFlatColor( color.r, color.g, color.b );
+      visual->updateColorAndAlpha();
+      break;
+    case ColorTransformer::COLOR_AXIS:
+      visual->setAxisColor();
+      visual->updateColorAndAlpha();
+      break;
+    case ColorTransformer::COLOR_CLUSTER:
+      break;
+    default:
+      break;
+  }
 
   float radius = radius_property_->getFloat();
   visual->setRadius( radius );

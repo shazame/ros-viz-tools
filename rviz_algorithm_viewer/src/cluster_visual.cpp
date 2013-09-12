@@ -10,6 +10,7 @@
 #include <cmath>
 
 #include "cluster_visual.h"
+#include "color_transformer.h"
 
 #include "Miniball.hpp"
 
@@ -122,6 +123,26 @@ void ClusterVisual::setFlatColor( float r, float g, float b )
   }
 }
 
+// Color is computed for all the clusters based on their position.
+void ClusterVisual::setAxisColor()
+{
+  // Get min/max x, y and z position of the clusters
+  Ogre::Vector3 points_min_pos = getPointsPosMin();
+  Ogre::Vector3 points_max_pos = getPointsPosMax();
+
+  std::vector<ClusterPointsPtr>::iterator it;
+  // Set the color of the cluster based on their positin
+  for (it = clusters_.begin(); it != clusters_.end(); ++it)
+  {
+    Ogre::ColourValue color = ColorTransformer::getAxisColor(
+        (*it)->getPointsCenter(),
+        points_min_pos,
+        points_max_pos );
+
+    (*it)->setPointsColor( color.r, color.g, color.b );
+  }
+}
+
 // Color is updated through to all the clusters.
 void ClusterVisual::updateColorAndAlpha()
 {
@@ -191,6 +212,44 @@ void ClusterVisual::setClustersShow( bool show_clusters )
   }
 }
 
+Ogre::Vector3 ClusterVisual::getPointsPosMin()
+{
+  Ogre::Vector3 min_pos;
+
+  std::vector<ClusterPointsPtr>::iterator it = clusters_.begin();
+  min_pos = (*it)->getPointsCenter();
+
+  for (; it != clusters_.end(); ++it)
+  {
+    Ogre::Vector3 pos = (*it)->getPointsCenter();
+
+    min_pos.x = ( pos.x < min_pos.x )? pos.x: min_pos.x;
+    min_pos.y = ( pos.y < min_pos.y )? pos.y: min_pos.y;
+    min_pos.z = ( pos.z < min_pos.z )? pos.z: min_pos.z;
+  }
+
+  return min_pos;
+}
+
+Ogre::Vector3 ClusterVisual::getPointsPosMax()
+{
+  Ogre::Vector3 max_pos;
+
+  std::vector<ClusterPointsPtr>::iterator it = clusters_.begin();
+  max_pos = (*it)->getPointsCenter();
+
+  for (; it != clusters_.end(); ++it)
+  {
+    Ogre::Vector3 pos = (*it)->getPointsCenter();
+
+    max_pos.x = ( pos.x > max_pos.x )? pos.x: max_pos.x;
+    max_pos.y = ( pos.y > max_pos.y )? pos.y: max_pos.y;
+    max_pos.z = ( pos.z > max_pos.z )? pos.z: max_pos.z;
+  }
+
+  return max_pos;
+}
+
 float ClusterVisual::radius_ = 0.2;
 float ClusterVisual::alpha_ = 1.0;
 bool  ClusterVisual::show_points_   = false;
@@ -255,6 +314,11 @@ void ClusterVisual::ClusterPoints::updateEnvelope()
   for (std::vector<float*>::iterator it = vp.begin(); it != vp.end(); ++it) {
     delete[] *it;
   }
+}
+
+const Ogre::Vector3& ClusterVisual::ClusterPoints::getPointsCenter()
+{
+  return envelope_center_;
 }
 
 // Color is passed through to all the Shape objects.

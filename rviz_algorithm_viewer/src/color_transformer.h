@@ -6,6 +6,7 @@
 namespace Ogre
 {
 class ColourValue;
+class Vector3;
 }
 
 namespace rviz
@@ -32,6 +33,11 @@ public:
 
   ColorType         getColorType() const;
   Ogre::ColourValue getFlatColor() const;
+
+  static Ogre::ColourValue getAxisColor(
+      Ogre::Vector3 pos,
+      Ogre::Vector3 min_pos,
+      Ogre::Vector3 max_pos );
 
   //void set( float r, float g, float b, float a );
 

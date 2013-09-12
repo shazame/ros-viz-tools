@@ -45,10 +45,11 @@ public:
   void setFramePosition( const Ogre::Vector3& position );
   void setFrameOrientation( const Ogre::Quaternion& orientation );
 
-  // Set the color and alpha of the visual, which are user-editable
+  // Set properties of the visual, which are user-editable
   // parameters and therefore don't come from the cluster message.
   void setAlpha( float a );
   void setFlatColor( float r, float g, float b  );
+  void setAxisColor();
   void updateColorAndAlpha();
   void setRadius( float r );
   void setPointsShow( bool show_points );
@@ -78,6 +79,7 @@ private:
       void clearPoints();
 
       void updateEnvelope();
+      const Ogre::Vector3& getPointsCenter();
       void displayEnvelope();
       void clearEnvelope();
 
@@ -110,6 +112,9 @@ private:
 
   // The object implementing the actual point cluster
   std::vector<ClusterPointsPtr> clusters_;
+
+  Ogre::Vector3 getPointsPosMin();
+  Ogre::Vector3 getPointsPosMax();
 
   // Global properties applied to every cluster
   static float radius_;

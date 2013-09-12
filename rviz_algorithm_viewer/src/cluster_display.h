@@ -54,6 +54,7 @@ private Q_SLOTS:
 
   void updateColorTransformer();
   void updateFlatColor();
+  void updateAxisColor();
 
   void updateHistoryLength();
 
