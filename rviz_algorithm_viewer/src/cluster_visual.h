@@ -5,6 +5,8 @@
 
 #include <rviz_algorithm_viewer/Cluster2.h>
 
+#include "color_transformer.h"
+
 namespace Ogre
 {
 class Vector3;
@@ -50,6 +52,7 @@ public:
   void setAlpha( float a );
   void setFlatColor( float r, float g, float b  );
   void setAxisColor();
+  void setClusterColor( const ColorTransformer& color_transformer );
   void updateColorAndAlpha();
   void setRadius( float r );
   void setPointsShow( bool show_points );

@@ -122,6 +122,15 @@ void ClusterDisplay::updateAxisColor()
   }
 }
 
+void ClusterDisplay::updateClusterColor()
+{
+  for( size_t i = 0; i < visuals_.size(); i++ )
+  {
+    visuals_[ i ]->setClusterColor( *color_transformer_ );
+    visuals_[ i ]->updateColorAndAlpha();
+  }
+}
+
 // Set the current radius value for each visual.
 void ClusterDisplay::updateRadius()
 {
@@ -148,6 +157,7 @@ void ClusterDisplay::updateColorTransformer()
       updateAxisColor();
       break;
     case ColorTransformer::COLOR_CLUSTER:
+      updateClusterColor();
       break;
     default:
       break;
@@ -229,6 +239,8 @@ void ClusterDisplay::initProperties(boost::shared_ptr<ClusterVisual> visual)
       visual->updateColorAndAlpha();
       break;
     case ColorTransformer::COLOR_CLUSTER:
+      visual->setClusterColor( *color_transformer_ );
+      visual->updateColorAndAlpha();
       break;
     default:
       break;

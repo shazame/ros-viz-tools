@@ -10,7 +10,6 @@
 #include <cmath>
 
 #include "cluster_visual.h"
-#include "color_transformer.h"
 
 #include "Miniball.hpp"
 
@@ -140,6 +139,23 @@ void ClusterVisual::setAxisColor()
         points_max_pos );
 
     (*it)->setPointsColor( color.r, color.g, color.b );
+  }
+}
+
+// Color is computed for all the clusters based on their label
+void ClusterVisual::setClusterColor( const ColorTransformer& color_transformer )
+{
+  int nb_clusters = clusters_.size();
+  float index = 0;
+
+  std::vector<ClusterPointsPtr>::iterator it;
+  // Set the color of the cluster based on their positin
+  for (it = clusters_.begin(); it != clusters_.end(); ++it)
+  {
+    Ogre::ColourValue color = color_transformer.getClusterColor( index / (nb_clusters-1) );
+    (*it)->setPointsColor( color.r, color.g, color.b );
+
+    index += 1.0;
   }
 }
 

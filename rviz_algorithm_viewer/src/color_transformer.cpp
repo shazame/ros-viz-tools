@@ -44,23 +44,15 @@ void ColorTransformer::createClusterProperties( rviz::Property* grandparent_prop
 {
   use_rainbow_property_ = new rviz::BoolProperty( "Use rainbow", true,
                                                   "Use a rainbow to color the clusters or interpolate between two.",
-                                                  parent_property, SLOT( updateUseRainbow() ), this);
+                                                  parent_property, SLOT( updateColorTransformer() ), grandparent_property );
 
   min_color_property_ = new rviz::ColorProperty( "Min Color", QColor( 255, 255, 255 ),
                                                  "Color to use for the first cluster. Then color is interpolated between this and Max Color.",
-                                                 parent_property );
+                                                 parent_property, SLOT( updateColorTransformer() ), grandparent_property );
 
   max_color_property_ = new rviz::ColorProperty( "Max Color", QColor( 0, 0, 0 ),
                                                  "Color to use for the last cluster. Before, color is interpolated between Min Color and this.",
-                                                 parent_property );
-}
-
-void ColorTransformer::updateUseRainbow()
-{
-  bool hide_range_color = use_rainbow_property_->getBool();
-
-  min_color_property_->setHidden( hide_range_color );
-  max_color_property_->setHidden( hide_range_color );
+                                                 parent_property, SLOT( updateColorTransformer() ), grandparent_property );
 }
 
 void ColorTransformer::setHiddenFlatProperties( bool hide )
@@ -118,8 +110,47 @@ Ogre::ColourValue ColorTransformer::getAxisColor( Ogre::Vector3 pos, Ogre::Vecto
   return color;
 }
 
-//void ColorTransformer::set( float r, float g, float b, float a )
-//{
-//}
+Ogre::ColourValue ColorTransformer::getClusterColor( float fraction ) const
+{
+  Ogre::ColourValue color;
+
+  if ( use_rainbow_property_->getBool() )
+  {
+    color = ColorTransformer::getRainbowColor( fraction );
+  }
+  else
+  {
+    Ogre::ColourValue min_color = min_color_property_->getOgreColor();
+    Ogre::ColourValue max_color = max_color_property_->getOgreColor();
+
+    color.r = fraction * max_color.r + (1.0f - fraction) * min_color.r;
+    color.g = fraction * max_color.g + (1.0f - fraction) * min_color.g;
+    color.b = fraction * max_color.b + (1.0f - fraction) * min_color.b;
+  }
+
+  return color;
+}
+
+Ogre::ColourValue ColorTransformer::getRainbowColor( float fraction )
+{
+  Ogre::ColourValue color;
+
+  fraction = std::min(fraction, 1.0f);
+  fraction = std::max(fraction, 0.0f);
+
+  float h = fraction * 5.0f + 1.0f;
+  int i = floor(h);
+  float f = h - i;
+  if ( !(i&1) ) f = 1 -f; // if i si even
+  float n = 1 - f;
+
+  if      (i <= 1) color.r = n, color.g = 0, color.b = 1;
+  else if (i == 2) color.r = 0, color.g = n, color.b = 1;
+  else if (i == 3) color.r = 0, color.g = 1, color.b = n;
+  else if (i == 4) color.r = n, color.g = 1, color.b = 0;
+  else if (i >= 5) color.r = 1, color.g = n, color.b = 0;
+
+  return color;
+}
 
 } // end namespace rviz_algorithm_viewer

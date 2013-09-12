@@ -39,10 +39,7 @@ public:
       Ogre::Vector3 min_pos,
       Ogre::Vector3 max_pos );
 
-  //void set( float r, float g, float b, float a );
-
-private Q_SLOTS:
-  void updateUseRainbow();
+  Ogre::ColourValue getClusterColor( float fraction ) const;
 
 private:
   void createFlatProperties   ( rviz::Property* grandparent_property, rviz::Property* parent_property );
@@ -53,7 +50,7 @@ private:
   void setHiddenAxisProperties   ( bool hide );
   void setHiddenClusterProperties( bool hide );
 
-  //float r_, b_, g_, a_;
+  static Ogre::ColourValue getRainbowColor( float fraction );
 
   rviz::EnumProperty  *color_transformer_property_;
 
