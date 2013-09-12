@@ -69,14 +69,15 @@ private:
       ClusterPoints( Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node );
       ~ClusterPoints();
 
-      void addPoint( Ogre::Vector3 position );
       void setPointsColor( float r, float g, float b );
       void updatePointsColorAndAlpha();
       void setPointsRadius( float r );
 
+      void addPoint( Ogre::Vector3 position );
       void displayPoints();
       void clearPoints();
 
+      void updateEnvelope();
       void displayEnvelope();
       void clearEnvelope();
 
@@ -84,6 +85,12 @@ private:
       // points position are always stored when a message is received
       // hence they are separated from the point object
       std::vector<Ogre::Vector3> points_pos_;
+      // The center and the radius of the envelope are stored each time a
+      // message is received as well. Center position is used to determine the
+      // color of the cluster when the Axis Color Transformer is chosen.
+      Ogre::Vector3 envelope_center_;
+      Ogre::Vector3 envelope_diameter_;
+
       // points and their envelope are only displayed when the corresponding
       // property is validated, thus the objects are only created when
       // necessary

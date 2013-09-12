@@ -11,6 +11,8 @@
 
 #include "cluster_visual.h"
 
+#include "Miniball.hpp"
+
 namespace rviz_algorithm_viewer
 {
 
@@ -63,6 +65,8 @@ void ClusterVisual::setMessage( const rviz_algorithm_viewer::Cluster2::ConstPtr&
       //green = (pos.y + 20) / 40.;
       //blue  = (pos.z + 20) / 40.;
     }
+
+    cluster_ptr->updateEnvelope();
 
     if ( show_points_ ) 
     {
@@ -209,6 +213,50 @@ void ClusterVisual::ClusterPoints::addPoint( Ogre::Vector3 position )
   points_pos_.push_back( position );
 }
 
+void ClusterVisual::ClusterPoints::updateEnvelope()
+{
+  // Convert vector of Ogre::Vector3 to vector of array 
+  // to allow iteration over coordinates
+  std::vector<float*> vp;
+  std::vector<Ogre::Vector3>::iterator it = points_pos_.begin();
+  std::vector<Ogre::Vector3>::iterator end = points_pos_.end();
+  for (; it != end; ++it)
+  {
+    // The coordinates are stored in an array
+    float* p = new float[3];
+    p[0] = (*it).x;
+    p[1] = (*it).y;
+    p[2] = (*it).z;
+
+    vp.push_back(p);
+  }
+
+  // Define the types of iterators through the points and their coordinates
+  typedef std::vector<float*>::const_iterator PointIterator;
+  typedef const float* CoordIterator;
+
+  // Compute bounding sphere center and radius
+  typedef Miniball::
+    Miniball <Miniball::CoordAccessor<PointIterator, CoordIterator> >
+    MB;
+  MB mb ( 3, vp.begin(), vp.end() ); // 3 is the dimension of the points
+
+  // Convert Miniball position and diameter into Ogre::Vector3
+  float d = 2 * std::sqrt( mb.squared_radius() );
+  envelope_diameter_ = Ogre::Vector3( d, d, d );
+
+  const float* center = mb.center();
+  float x = *(center++);
+  float y = *(center++);
+  float z = *center;
+  envelope_center_ = Ogre::Vector3( x, y, z );
+
+  // Clean up
+  for (std::vector<float*>::iterator it = vp.begin(); it != vp.end(); ++it) {
+    delete[] *it;
+  }
+}
+
 // Color is passed through to all the Shape objects.
 void ClusterVisual::ClusterPoints::setPointsColor( float r, float g, float b )
 {
@@ -273,56 +321,13 @@ void ClusterVisual::ClusterPoints::clearPoints()
   points_.clear();
 }
 
-#include "Miniball.hpp"
-
 void ClusterVisual::ClusterPoints::displayEnvelope()
 {
   envelope_.reset( new rviz::Shape( rviz::Shape::Sphere, scene_manager_, frame_node_) );
 
-  // Convert vector of Ogre::Vector3 to vector of array 
-  // to allow iteration over coordinates
-  std::vector<float*> vp;
-  std::vector<Ogre::Vector3>::iterator it = points_pos_.begin();
-  std::vector<Ogre::Vector3>::iterator end = points_pos_.end();
-  for (; it != end; ++it)
-  {
-    // The coordinates are stored in an array
-    float* p = new float[3];
-    p[0] = (*it).x;
-    p[1] = (*it).y;
-    p[2] = (*it).z;
-
-    vp.push_back(p);
-  }
-
-  // Define the types of iterators through the points and their coordinates
-  typedef std::vector<float*>::const_iterator PointIterator;
-  typedef const float* CoordIterator;
-
-  // Compute bounding sphere center and radius
-  typedef Miniball::
-    Miniball <Miniball::CoordAccessor<PointIterator, CoordIterator> >
-    MB;
-  MB mb ( 3, vp.begin(), vp.end() ); // 3 is the dimension of the points
-
-  // Convert Miniball position and diameter into Ogre::Vector3
-  float d = 2 * std::sqrt( mb.squared_radius() );
-  Ogre::Vector3 diameter( d, d, d );
-
-  const float* center = mb.center();
-  float x = *(center++);
-  float y = *(center++);
-  float z = *center;
-  Ogre::Vector3 centerPos( x, y, z );
-
   // Update envelope with computed diameter and position
-  envelope_->setScale( diameter );
-  envelope_->setPosition( centerPos );
-
-  // Clean up
-  for (std::vector<float*>::iterator it = vp.begin(); it != vp.end(); ++it) {
-    delete[] *it;
-  }
+  envelope_->setScale( envelope_diameter_ );
+  envelope_->setPosition( envelope_center_ );
 }
 
 void ClusterVisual::ClusterPoints::clearEnvelope()
