@@ -63,13 +63,13 @@ def send_clusters():
 
     points = []
     for i in range( points_number ):
-      points.append( [
+      points.append([
           np.random.randint( -1 * range_size, range_size ),
           np.random.randint( -1 * range_size, range_size ),
-          np.random.randint( -1 * range_size, range_size ) ] )
+          np.random.randint( -1 * range_size, range_size )])
 
     points = np.asarray( points )
-    pub.publish( gen_cluster_msg( points, get_points_label( points ) ))
+    pub.publish( gen_cluster_msg( points, get_points_label( points )))
 
     br.sendTransform((0, 0, 0),
         tf.transformations.quaternion_from_euler(0, 0, 0),
